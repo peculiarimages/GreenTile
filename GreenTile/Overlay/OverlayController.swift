@@ -5,7 +5,8 @@ import GreenTileKit
 /// Keeps small tiling buttons attached below the traffic lights of every ordinary window on screen.
 /// Two (left half, right half) sit under the red and green buttons; three (left, center, right
 /// third) sit under red, yellow and green. Right-click picks which pair is the default and Option
-/// turns it over while held.
+/// turns it over while held. When the display a window is on has a neighbour to its left (right),
+/// a chevron beside the leftmost (rightmost) button sends the window there.
 ///
 /// How it works:
 /// * The Quartz window list (cheap, no AX) is polled to follow windows as they move and restack.
@@ -45,7 +46,18 @@ final class OverlayController {
     /// Lets the controller attach buttons to this app's own windows. Only the self-test sets it.
     var includesOwnWindows = false
 
-    /// One button's panel: which window it belongs to and which traffic light it sits under.
+    /// Whether to offer the chevrons that send a window to a neighbouring display. The self-tests
+    /// that are about the tiling buttons switch them off to stay focused.
+    var showsDisplayChevrons = true
+
+    /// Columns 0...2 are the tiling buttons under the red, yellow and green lights; the chevrons
+    /// sit one place beyond either end.
+    private enum Column {
+        static let leftChevron = -1
+        static let rightChevron = 3
+    }
+
+    /// One button's panel: which window it belongs to and which place in the row it takes.
     private struct SlotKey: Hashable {
         let window: CGWindowID
         let column: Int
@@ -53,7 +65,12 @@ final class OverlayController {
 
     #if DEBUG
     func panelForTesting(windowNumber: Int, column: Int) -> OverlayPanel? {
-        panels[SlotKey(window: CGWindowID(windowNumber), column: column)]
+        panels[SlotKey(window: CGWindowID(windowNumber), column: column)] as? OverlayPanel
+    }
+
+    func chevronPanelForTesting(windowNumber: Int, side: DisplaySide) -> ChevronPanel? {
+        let column = side == .left ? Column.leftChevron : Column.rightChevron
+        return panels[SlotKey(window: CGWindowID(windowNumber), column: column)] as? ChevronPanel
     }
     #endif
 
@@ -67,7 +84,7 @@ final class OverlayController {
 
     private var tracked: [CGWindowID: TrackedWindow] = [:]
     private var examined: Set<CGWindowID> = []
-    private var panels: [SlotKey: OverlayPanel] = [:]
+    private var panels: [SlotKey: ButtonPanel] = [:]
 
     private var scanInFlight = false
     private var lastScanStart: CFTimeInterval = 0
@@ -144,7 +161,8 @@ final class OverlayController {
         }
 
         let windows = WindowCatalog.onScreen()
-        let displayFrames = Display.all().map(\.frame)
+        let displays = Display.all()
+        let displayFrames = displays.map(\.frame)
         let primaryHeight = Display.primaryHeight
 
         // Halves or thirds: the right-click default, turned over while Option is held. The key
@@ -163,7 +181,7 @@ final class OverlayController {
             guard let info = tracked[window.id] else { continue }
 
             let lights = info.lightsRect.offsetBy(dx: window.bounds.minX, dy: window.bounds.minY)
-            var group: [OverlayPanel] = []
+            var group: [ButtonPanel] = []
             for slot in mode.slots {
                 let key = SlotKey(window: window.id, column: slot.column)
                 liveSlots.insert(key)
@@ -180,6 +198,31 @@ final class OverlayController {
                 group.append(panel)
             }
 
+            // Chevrons that send the window to a display beside the one it is on, shown only for
+            // the sides where such a display exists.
+            if showsDisplayChevrons,
+               let displayIndex = ScreenGeometry.areaIndex(for: window.bounds, in: displayFrames) {
+                for side in [DisplaySide.left, .right] {
+                    guard let neighbour = ScreenGeometry.neighbourIndex(of: displayIndex, on: side, in: displayFrames,
+                                                                        preferring: window.bounds),
+                          let placed = OverlayPlacement.chevronFrame(side: side, trafficLights: lights,
+                                                                     windowFrame: window.bounds)
+                    else { continue }
+                    let key = SlotKey(window: window.id, column: side == .left ? Column.leftChevron : Column.rightChevron)
+                    liveSlots.insert(key)
+                    let panel = chevronPanel(for: key, side: side)
+                    panel.targetWindow = info.element
+                    let name = displays[neighbour].name
+                    if panel.neighbourName != name {
+                        panel.neighbourName = name
+                        help.refresh(for: panel, help: ButtonHelp(movingToDisplayNamed: name, side: side))
+                    }
+                    let frame = ScreenGeometry.flip(placed, primaryHeight: primaryHeight)
+                    if panel.frame != frame { panel.setFrame(frame, display: false) }
+                    group.append(panel)
+                }
+            }
+
             // This window's panels belong in a block directly in front of it. Check the real
             // front-to-back list every time: whenever the window is brought forward (activation, a
             // click) the system moves it above its panels, and nothing else would tell us they are
@@ -192,7 +235,8 @@ final class OverlayController {
             }
         }
 
-        // Drop panels of windows that went away, and the middle button when Option is released.
+        // Drop panels of windows that went away, the middle button when Option is released, and a
+        // chevron when its neighbouring display is gone or the window has moved away from it.
         for key in panels.keys where !liveSlots.contains(key) {
             if let panel = panels[key] { help.hide(ifOwnedBy: panel) }
             panels[key]?.orderOut(nil)
@@ -228,7 +272,7 @@ final class OverlayController {
     // MARK: Panels
 
     private func panel(for key: SlotKey, layout: TileLayout) -> OverlayPanel {
-        if let existing = panels[key] { return existing }
+        if let existing = panels[key] as? OverlayPanel { return existing }
         let panel = OverlayPanel(layout: layout)
         panel.tileButton.onClick = { [weak self, weak panel] modifiers in
             guard let self, let panel, let window = panel.targetWindow else { return }
@@ -253,6 +297,34 @@ final class OverlayController {
             }
         }
         panel.tileButton.onPress = { [weak self, weak panel] in
+            guard let self, let panel else { return }
+            self.help.hide(ifOwnedBy: panel)
+        }
+        panels[key] = panel
+        return panel
+    }
+
+    private func chevronPanel(for key: SlotKey, side: DisplaySide) -> ChevronPanel {
+        if let existing = panels[key] as? ChevronPanel { return existing }
+        let panel = ChevronPanel(side: side)
+        panel.chevronButton.onClick = { [weak self, weak panel] in
+            guard let self, let panel, let window = panel.targetWindow else { return }
+            let side = panel.side
+            // Let the click finish before the window moves.
+            DispatchQueue.main.async {
+                WindowActions.move(window, toward: side)
+                self.boost()
+            }
+        }
+        panel.chevronButton.onHoverChange = { [weak self, weak panel] hovering in
+            guard let self, let panel else { return }
+            if hovering {
+                self.help.hoverBegan(for: panel, help: ButtonHelp(movingToDisplayNamed: panel.neighbourName, side: panel.side))
+            } else {
+                self.help.hoverEnded(for: panel)
+            }
+        }
+        panel.chevronButton.onPress = { [weak self, weak panel] in
             guard let self, let panel else { return }
             self.help.hide(ifOwnedBy: panel)
         }

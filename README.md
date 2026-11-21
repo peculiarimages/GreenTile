@@ -31,7 +31,8 @@ hovering, no menu, no keyboard shortcut to remember.
 
 Each button sits directly below one of the traffic lights, centred on it, and is drawn like a
 miniature green traffic light: half green for the part of the screen the window will take, half
-white for the rest.
+white for the rest. The green is `#66CC3D`, the average of the system's green traffic light, and
+the outline is that green with 33% black added (`#448929`).
 
 - **Two buttons:** left half under the red button, right half under the green one (the yellow one
   is left clear). Click ◐ and the window fills the left half of the display it is on (the area
@@ -45,6 +46,12 @@ white for the rest.
 - **Hover** a button for a moment and a small bubble says what it does and how to switch. It stays
   while the pointer is on the button or on the bubble, and goes once the pointer has been away from
   both for 2 seconds (or straight away when you click).
+- **Several displays:** when the display a window is on has another display to its left, a chevron
+  `‹` appears to the left of the leftmost button, and when there is one to its right, a chevron `›`
+  appears to the right of the rightmost button. Clicking one sends the window to that display,
+  covering the same share of it (a window tiled to a left half stays a left half). Hovering it names
+  the display. With a single display, or on the side of a window that has no neighbour, there is no
+  chevron; the tiling buttons are the same either way.
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
@@ -128,6 +135,7 @@ Accessibility permission:
 | `--selftest-tile <file>` | tiles a throwaway window to every layout on every display and checks the result |
 | `--selftest-stacking <file>` | re-fronts a throwaway window repeatedly and checks its buttons come back in front |
 | `--selftest-modes <file>` | fakes the Option key and delivers right-/Control-click events; checks each button sits under its light, the halves/thirds switching, and every button's result |
+| `--selftest-displays <file>` | parks a throwaway window on each real display (needs two) and checks the chevrons: where they appear, their help, and the move across |
 | `--selftest-help <file>` | hovers buttons with synthetic events and a simulated pointer; checks the help bubble's timing, text, placement, the 2 s away delay and its dismissal |
 
 ## Known limits

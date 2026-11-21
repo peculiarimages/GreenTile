@@ -6,14 +6,8 @@ import GreenTileKit
 /// take and white for the rest. The view is the size of a traffic light, so the click target is
 /// larger than the circle drawn in its middle.
 final class TileButton: NSView {
-    // Traffic-light greens: lit at the top, deeper at the bottom, with a darker rim.
-    private static let greenTop = NSColor(srgbRed: 0.27, green: 0.83, blue: 0.35, alpha: 1)
-    private static let greenBottom = NSColor(srgbRed: 0.15, green: 0.75, blue: 0.25, alpha: 1)
-    private static let rimTop = NSColor(srgbRed: 0.15, green: 0.69, blue: 0.22, alpha: 1)
-    private static let rimBottom = NSColor(srgbRed: 0.09, green: 0.57, blue: 0.16, alpha: 1)
-    // The white half is white at the top and a touch grey at the bottom, to match the same light.
-    private static let whiteTop = NSColor.white
-    private static let whiteBottom = NSColor(srgbRed: 0.88, green: 0.90, blue: 0.88, alpha: 1)
+    // Colours come from `ButtonPalette` (the green fill and its 33%-black outline are defined once,
+    // in `ButtonColors`, and shared with the chevrons).
 
     /// What the button tiles to. It changes when Option swaps halves for thirds.
     var layout: TileLayout {
@@ -132,26 +126,25 @@ final class TileButton: NSView {
             shadow.shadowOffset = NSSize(width: 0, height: -0.6)
             shadow.set()
         }
-        tone(Self.rimBottom).setFill()
+        tone(ButtonPalette.outline).setFill()
         outerPath.fill()
         NSGraphicsContext.restoreGraphicsState()
-        NSGradient(starting: tone(Self.rimTop), ending: tone(Self.rimBottom))?.draw(in: outerPath, angle: 90)
 
         // 2. Body: the white and green parts, each shaded from light (top) to deeper (bottom).
         NSGraphicsContext.saveGraphicsState()
         innerPath.addClip()
-        NSGradient(starting: tone(Self.whiteTop), ending: tone(Self.whiteBottom))?.draw(in: inner, angle: 90)
+        NSGradient(starting: tone(ButtonPalette.whiteTop), ending: tone(ButtonPalette.whiteBottom))?.draw(in: inner, angle: 90)
 
         let slot = layout.slot
         let green = CGRect(x: inner.minX + slot.minX * inner.width, y: inner.minY,
                            width: slot.width * inner.width, height: inner.height)
-        NSGradient(starting: tone(Self.greenTop), ending: tone(Self.greenBottom))?.draw(in: green, angle: 90)
+        NSGradient(starting: tone(ButtonPalette.fillTop), ending: tone(ButtonPalette.fillBottom))?.draw(in: green, angle: 90)
 
         // 3. Gloss: a faint light fading out over the top half, like the system buttons. It is
         //    left off while pressed, when the button looks pushed in.
         if !isPressed {
             let gloss = CGRect(x: inner.minX, y: inner.minY, width: inner.width, height: inner.height * 0.45)
-            NSGradient(starting: NSColor.white.withAlphaComponent(0.30),
+            NSGradient(starting: NSColor.white.withAlphaComponent(ButtonPalette.glossAlpha),
                        ending: NSColor.white.withAlphaComponent(0))?.draw(in: gloss, angle: 90)
         }
         NSGraphicsContext.restoreGraphicsState()

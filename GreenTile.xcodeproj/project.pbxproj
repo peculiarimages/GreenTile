@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A7D39B4C356D92AAA18538F /* ButtonPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6460A023E60D4B8591659E76 /* ButtonPalette.swift */; };
 		1373EABFCC0C546F275F7BB7 /* TileLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */; };
 		15366ED4521D719B93666A19 /* WindowCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DA5EDC94ACA4B0F226AC3C /* WindowCatalog.swift */; };
 		1B0C8982F1CA95EECEC7309E /* TileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C4CDE0887630B5AE604746 /* TileButton.swift */; };
 		218A5E13EE13C5535038DC08 /* OverlayPlacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */; };
+		29D274BF0B097F7D0D6DAF87 /* ButtonColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */; };
 		33BADB196BE1890E0DFA5B78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D5C467E98FF8BA4D02EAE /* main.swift */; };
 		46114E242523AE312AD4200C /* HelpBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */; };
 		53C2D2AA1CC8AA6DB7976C1B /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */; };
@@ -20,13 +22,16 @@
 		691D972881893DCD8601BF78 /* DebugTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5729CDE331BC603794CA7F /* DebugTools.swift */; };
 		85DAD9A7A78F6E2532368E46 /* TileLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22863209809FDDF12E1679C /* TileLayout.swift */; };
 		8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */; };
+		9419B39892C359383809ADF7 /* ButtonColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F3DB80F7D3B873936EE12B /* ButtonColors.swift */; };
 		96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */; };
 		B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BAA94FC07D28EA45376034 /* ButtonHelp.swift */; };
 		C2C01AC1F6DDB3A7A3674D58 /* GreenTileKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C3C9A9EF2C1EF0A10062B41F /* ChevronButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CDAA3F7096FB7ECE938C11B /* ChevronButton.swift */; };
 		CCDF3F8C3908C0D2D2D29FBA /* ScreenGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */; };
 		D4D1A892B687162D44661BD1 /* GreenTileKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D9EC71C47C5ACB19A32D6D71 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2284F49BBE368468499C1080 /* OverlayController.swift */; };
 		E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */; };
+		EC7BC302CEB5A7F51B95D5BC /* DisplayNeighbourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F99538315E410E35006323 /* DisplayNeighbourTests.swift */; };
 		EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */; };
 		F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */; };
 		F44036D3AB9CB6A28E4211D9 /* GreenTileKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; };
@@ -75,6 +80,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0CDAA3F7096FB7ECE938C11B /* ChevronButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChevronButton.swift; sourceTree = "<group>"; };
 		169D229CE196B4E4B2E59027 /* GreenTileKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GreenTileKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2284F49BBE368468499C1080 /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
 		27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonHelpTests.swift; sourceTree = "<group>"; };
@@ -82,9 +88,13 @@
 		43DA5EDC94ACA4B0F226AC3C /* WindowCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCatalog.swift; sourceTree = "<group>"; };
 		4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpBubble.swift; sourceTree = "<group>"; };
 		4C5729CDE331BC603794CA7F /* DebugTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugTools.swift; sourceTree = "<group>"; };
+		6460A023E60D4B8591659E76 /* ButtonPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonPalette.swift; sourceTree = "<group>"; };
+		64F99538315E410E35006323 /* DisplayNeighbourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayNeighbourTests.swift; sourceTree = "<group>"; };
+		68F3DB80F7D3B873936EE12B /* ButtonColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColors.swift; sourceTree = "<group>"; };
 		69C4CDE0887630B5AE604746 /* TileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileButton.swift; sourceTree = "<group>"; };
 		6CAC7CC035B12BE7665989B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		797E8238174D8AEA1D339B9C /* GreenTileKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GreenTileKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColorsTests.swift; sourceTree = "<group>"; };
 		97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileLayoutTests.swift; sourceTree = "<group>"; };
 		998D46ED752DDE6F65961F2C /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -124,6 +134,8 @@
 		0FCC9A42E8CE692315E55054 /* Overlay */ = {
 			isa = PBXGroup;
 			children = (
+				6460A023E60D4B8591659E76 /* ButtonPalette.swift */,
+				0CDAA3F7096FB7ECE938C11B /* ChevronButton.swift */,
 				4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */,
 				2284F49BBE368468499C1080 /* OverlayController.swift */,
 				A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */,
@@ -147,6 +159,7 @@
 		43B2B1BAB8FABA99ECB8F19A /* GreenTileKit */ = {
 			isa = PBXGroup;
 			children = (
+				68F3DB80F7D3B873936EE12B /* ButtonColors.swift */,
 				32BAA94FC07D28EA45376034 /* ButtonHelp.swift */,
 				9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */,
 				D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */,
@@ -197,7 +210,9 @@
 		B148B4B3382A9E6204697CBC /* GreenTileKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */,
 				27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */,
+				64F99538315E410E35006323 /* DisplayNeighbourTests.swift */,
 				FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */,
 				B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */,
 				97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */,
@@ -334,6 +349,8 @@
 			files = (
 				53D0DAAF151C30FA4FD955A2 /* AX.swift in Sources */,
 				96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */,
+				0A7D39B4C356D92AAA18538F /* ButtonPalette.swift in Sources */,
+				C3C9A9EF2C1EF0A10062B41F /* ChevronButton.swift in Sources */,
 				691D972881893DCD8601BF78 /* DebugTools.swift in Sources */,
 				54F3B67210CBA9B26D357BB0 /* Display.swift in Sources */,
 				46114E242523AE312AD4200C /* HelpBubble.swift in Sources */,
@@ -350,7 +367,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29D274BF0B097F7D0D6DAF87 /* ButtonColorsTests.swift in Sources */,
 				EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */,
+				EC7BC302CEB5A7F51B95D5BC /* DisplayNeighbourTests.swift in Sources */,
 				E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */,
 				F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */,
 				1373EABFCC0C546F275F7BB7 /* TileLayoutTests.swift in Sources */,
@@ -361,6 +380,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9419B39892C359383809ADF7 /* ButtonColors.swift in Sources */,
 				B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */,
 				218A5E13EE13C5535038DC08 /* OverlayPlacement.swift in Sources */,
 				CCDF3F8C3908C0D2D2D29FBA /* ScreenGeometry.swift in Sources */,

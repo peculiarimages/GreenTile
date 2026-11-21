@@ -15,6 +15,8 @@ import GreenTileKit
 /// * `--selftest-stacking <file>`: re-fronts a throwaway window and checks its buttons stay in front.
 /// * `--selftest-help <file>`: hovers buttons with synthetic events and a simulated pointer; checks the
 ///   help bubble's timing, text, placement, the 2 s away delay, and its dismissal.
+/// * `--selftest-displays <file>`: parks a throwaway window on each real display (needs two); checks the
+///   chevrons that send it to a neighbouring display: where they appear, their help, and the move.
 /// * `--selftest-modes <file>`: fakes the Option key; checks the halves/thirds swap, that each button
 ///   sits under its traffic light, and what every button does.
 enum DebugTools {
@@ -30,6 +32,7 @@ enum DebugTools {
         if let url = path(after: "--selftest-stacking") { selfTestStacking(report: url); return true }
         if let url = path(after: "--selftest-modes") { selfTestModes(report: url); return true }
         if let url = path(after: "--selftest-help") { selfTestHelp(report: url); return true }
+        if let url = path(after: "--selftest-displays") { selfTestDisplays(report: url); return true }
         return false
     }
 
@@ -96,6 +99,7 @@ enum DebugTools {
         var held: NSEvent.ModifierFlags = []
         let controller = OverlayController()
         controller.includesOwnWindows = true
+        controller.showsDisplayChevrons = false   // this test is about the tiling buttons
         controller.modifierFlags = { held }
         controller.start()
         let bubble = controller.helpBubbleForTesting
@@ -304,6 +308,158 @@ enum DebugTools {
         finish()
     }
 
+    // MARK: Display chevrons self-test
+
+    /// Uses the real displays of this Mac (it needs at least two). Parks a throwaway window on each
+    /// display in turn and checks that a chevron appears exactly on the sides where another display
+    /// touches and is placed right, that its help names the neighbour, and that clicking it sends the
+    /// window there in proportion.
+    private static func selfTestDisplays(report file: URL) {
+        var report = "AX trusted: \(AXIsProcessTrusted())\n"
+        var failures = 0
+        func record(_ label: String, _ ok: Bool, _ detail: String = "") {
+            if !ok { failures += 1 }
+            report += "\(label): \(ok ? "OK" : "FAIL") \(detail)\n"
+        }
+        let displays = Display.all()
+        report += "displays: " + displays.enumerated().map { "[\($0.offset)] \($0.element.name) \(fmt($0.element.frame))" }.joined(separator: "; ") + "\n"
+        guard displays.count >= 2 else {
+            report += "SKIPPED: this test needs at least two displays\n"
+            try? report.write(to: file, atomically: true, encoding: .utf8)
+            return
+        }
+        let frames = displays.map(\.frame)
+        let primaryHeight = Display.primaryHeight
+
+        let controller = OverlayController()
+        controller.includesOwnWindows = true
+        controller.start()
+        let bubble = controller.helpBubbleForTesting
+        var pointer = CGPoint(x: -20000, y: -20000)
+        bubble.pointerLocation = { pointer }
+
+        let window = makeTestWindow(title: "GreenTile displays test")
+        pump(2.0)
+        func finish() {
+            report += failures == 0 ? "ALL PASSED\n" : "\(failures) FAILED\n"
+            controller.stop()
+            window.close()
+            try? report.write(to: file, atomically: true, encoding: .utf8)
+        }
+        guard let ax = ownStandardWindow() else {
+            record("find the test window", false)
+            finish(); return
+        }
+
+        /// Puts the window mid-display (optionally tiled) and gives the controller time to notice.
+        func park(on index: Int, tile layout: TileLayout? = nil) {
+            let usable = displays[index].usable
+            AX.setFrame(ax, to: CGRect(x: usable.midX - 350, y: usable.midY - 200, width: 700, height: 400))
+            pump(0.4)
+            if let layout { WindowActions.tile(ax, layout) }
+            pump(1.0)
+        }
+        func chevron(_ side: DisplaySide) -> ChevronPanel? {
+            controller.chevronPanelForTesting(windowNumber: window.windowNumber, side: side)
+        }
+        func onScreenFrame(of panel: ChevronPanel) -> CGRect {
+            ScreenGeometry.flip(panel.frame, primaryHeight: primaryHeight)
+        }
+        func expectedFrame(_ side: DisplaySide) -> CGRect? {
+            guard let lights = trafficLights(of: ax), let windowFrame = AX.frame(of: ax) else { return nil }
+            return OverlayPlacement.chevronFrame(side: side, trafficLights: lights, windowFrame: windowFrame)
+        }
+        func neighbour(of index: Int, _ side: DisplaySide) -> Int? {
+            ScreenGeometry.neighbourIndex(of: index, on: side, in: frames, preferring: AX.frame(of: ax))
+        }
+        func mouseEvent(_ type: NSEvent.EventType, on panel: ChevronPanel) -> NSEvent? {
+            NSEvent.mouseEvent(with: type, location: NSPoint(x: panel.frame.width / 2, y: panel.frame.height / 2),
+                               modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime,
+                               windowNumber: panel.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 1)
+        }
+
+        // 1. On each display, a chevron on exactly the sides that have a neighbouring display.
+        for index in displays.indices {
+            park(on: index)
+            for side in [DisplaySide.left, .right] {
+                let label = "on \(displays[index].name): \(side) chevron"
+                let actual = chevron(side).map(onScreenFrame)
+                guard neighbour(of: index, side) != nil else {
+                    record("\(label) is absent (no display on that side)", actual == nil)
+                    continue
+                }
+                if let actual, let expected = expectedFrame(side) {
+                    record("\(label) is present and placed correctly",
+                           ScreenGeometry.framesMatch(actual, expected, tolerance: 1),
+                           "expected \(fmt(expected)) got \(fmt(actual))")
+                } else {
+                    record("\(label) is present and placed correctly", false, "expected a chevron, got \(actual.map(fmt) ?? "none")")
+                }
+            }
+        }
+
+        // 2. Clicking a chevron (through the button's real mouse-up handling) sends the window across.
+        for side in [DisplaySide.left, .right] {
+            guard let from = displays.indices.first(where: { ScreenGeometry.neighbourIndex(of: $0, on: side, in: frames) != nil }),
+                  let target = ScreenGeometry.neighbourIndex(of: from, on: side, in: frames) else {
+                report += "(no display has a neighbour on its \(side): click test for that side not applicable)\n"
+                continue
+            }
+            park(on: from, tile: .leftHalf)
+            guard let panel = chevron(side), let before = AX.frame(of: ax),
+                  let up = mouseEvent(.leftMouseUp, on: panel) else {
+                record("clicking the \(side) chevron", false, "no chevron to click")
+                continue
+            }
+            panel.chevronButton.mouseUp(with: up)
+            pump(1.0)
+            let expected = ScreenGeometry.mapProportionally(before, from: displays[from].usable, to: displays[target].usable)
+            let after = AX.frame(of: ax) ?? .zero
+            record("clicking the \(side) chevron sends the window from \(displays[from].name) to \(displays[target].name), in proportion",
+                   ScreenGeometry.framesMatch(expected, after, tolerance: 1), "expected \(fmt(expected)) got \(fmt(after))")
+            record("a left half stays a left half on the other display",
+                   ScreenGeometry.framesMatch(TileLayout.leftHalf.frame(in: displays[target].usable), after, tolerance: 2))
+            let way = side == .left ? DisplaySide.right : .left
+            record("the way back is now offered on the \(way) side",
+                   chevron(way) != nil || expectedFrame(way) == nil,
+                   chevron(way) != nil ? "" : "no chevron on \(way)")
+        }
+
+        // 3. The help names the neighbour.
+        for side in [DisplaySide.left, .right] {
+            guard let from = displays.indices.first(where: { ScreenGeometry.neighbourIndex(of: $0, on: side, in: frames) != nil }),
+                  let target = ScreenGeometry.neighbourIndex(of: from, on: side, in: frames) else { continue }
+            park(on: from)
+            guard let panel = chevron(side),
+                  let enter = NSEvent.enterExitEvent(with: .mouseEntered, location: NSPoint(x: 4, y: 8), modifierFlags: [],
+                                                     timestamp: ProcessInfo.processInfo.systemUptime,
+                                                     windowNumber: panel.windowNumber, context: nil, eventNumber: 0,
+                                                     trackingNumber: 0, userData: nil) else {
+                record("hovering the \(side) chevron", false, "no chevron")
+                continue
+            }
+            pointer = CGPoint(x: panel.frame.midX, y: panel.frame.midY)
+            panel.chevronButton.mouseEntered(with: enter)
+            pump(0.8)
+            let wanted = ButtonHelp(movingToDisplayNamed: displays[target].name, side: side)
+            record("hovering the \(side) chevron shows help naming \(displays[target].name)",
+                   controller.helpForTesting == wanted && bubble.isShowingForTesting,
+                   controller.helpForTesting.map { "\($0.title) | \($0.detail)" } ?? "no bubble")
+            bubble.hide()
+            pointer = CGPoint(x: -20000, y: -20000)
+        }
+
+        // 4. Switching the chevrons off removes them.
+        park(on: displays.indices.first(where: { neighbour(of: $0, .left) != nil || neighbour(of: $0, .right) != nil }) ?? 0)
+        record("a chevron is up before switching them off", chevron(.left) != nil || chevron(.right) != nil)
+        controller.showsDisplayChevrons = false
+        pump(0.6)
+        record("no chevrons once they are switched off", chevron(.left) == nil && chevron(.right) == nil)
+        controller.showsDisplayChevrons = true
+
+        finish()
+    }
+
     // MARK: Halves / thirds self-test
 
     /// Drives the real overlay controller with a throwaway window and a faked Option key.
@@ -324,6 +480,7 @@ enum DebugTools {
         var held: NSEvent.ModifierFlags = []
         let controller = OverlayController()
         controller.includesOwnWindows = true
+        controller.showsDisplayChevrons = false   // this test is about the tiling buttons
         controller.modifierFlags = { held }
         controller.start()
 
@@ -461,6 +618,7 @@ enum DebugTools {
         var report = "AX trusted: \(AXIsProcessTrusted())\n"
         let controller = OverlayController()
         controller.includesOwnWindows = true
+        controller.showsDisplayChevrons = false   // this test is about the tiling buttons
         controller.start()
 
         let window = makeTestWindow(title: "GreenTile stacking test")
@@ -609,8 +767,38 @@ enum DebugTools {
         }
     }
 
+    /// The chevrons beside the outermost tiling buttons, as they look on a window with a display on
+    /// each side.
+    private static func renderChevrons(into directory: URL) {
+        let styles: [(name: String, appearance: NSAppearance.Name, background: NSColor)] = [
+            ("light", .aqua, NSColor(white: 0.93, alpha: 1)),
+            ("dark", .darkAqua, NSColor(white: 0.17, alpha: 1)),
+        ]
+        for style in styles {
+            let size = CGSize(width: 130, height: 70)
+            let corner = MockWindowCorner(frame: CGRect(origin: .zero, size: size))
+            corner.appearance = NSAppearance(named: style.appearance)
+            corner.wantsLayer = true
+            corner.layer?.backgroundColor = style.background.cgColor
+            for slot in TileMode.halves.slots {
+                let button = TileButton(layout: slot.layout)
+                button.frame = OverlayPlacement.frame(column: slot.column, trafficLights: mockLights)
+                corner.addSubview(button)
+            }
+            for side in [DisplaySide.left, .right] {
+                guard let frame = OverlayPlacement.chevronFrame(side: side, trafficLights: mockLights,
+                                                                windowFrame: CGRect(origin: .zero, size: size)) else { continue }
+                let chevron = ChevronButton(side: side)
+                chevron.frame = frame
+                corner.addSubview(chevron)
+            }
+            writePNG(of: corner, scale: 8, to: directory.appendingPathComponent("overlay-chevrons-\(style.name).png"))
+        }
+    }
+
     private static func renderOverlay(into directory: URL) {
         renderHelp(into: directory)
+        renderChevrons(into: directory)
         renderStates(into: directory)
         let styles: [(name: String, appearance: NSAppearance.Name, background: NSColor)] = [
             ("light", .aqua, NSColor(white: 0.93, alpha: 1)),

@@ -23,6 +23,12 @@ public enum OverlayPlacement {
     /// Retina) and its click area never reaches into the traffic lights. It must stay within
     /// `hitSlop` so the circle remains inside the click area.
     public static let circleNudgeY: CGFloat = -0.5
+    /// A chevron's click area is narrower than this only when the window leaves little room beside
+    /// the traffic lights; below this width the chevron is left out.
+    public static let minimumChevronWidth: CGFloat = 8
+    /// How far the left chevron's click area stays from the window's left edge, so it does not sit
+    /// on the strip used to resize the window (given up only when the window is too tight for it).
+    public static let chevronEdgeInset: CGFloat = 3
     /// Smaller windows (dialogs, utility panels, Stage Manager thumbnails) get no buttons.
     public static let minimumWindowSize = CGSize(width: 220, height: 80)
 
@@ -41,6 +47,28 @@ public enum OverlayPlacement {
                       y: trafficLights.maxY + centreBelow - hitSize / 2,
                       width: hitSize,
                       height: hitSize)
+    }
+
+    /// The panel frame for the chevron that sends the window to the display on `side`: the same row
+    /// as the tiling buttons, directly beside the outermost one (left of the red column, right of
+    /// the green column). It is trimmed to stay inside the window, and nil when there is too little
+    /// room. All rects are in the same (Accessibility) coordinate space.
+    public static func chevronFrame(side: DisplaySide, trafficLights: CGRect, windowFrame: CGRect) -> CGRect? {
+        let y = trafficLights.maxY + centreBelow - hitSize / 2
+        let x0: CGFloat, x1: CGFloat
+        switch side {
+        case .left:
+            x1 = trafficLights.minX
+            // Keep clear of the window's edge when there is room; in a tight window use the whole
+            // gap rather than give up on the chevron.
+            let roomy = max(windowFrame.minX + chevronEdgeInset, x1 - hitSize)
+            x0 = x1 - roomy >= minimumChevronWidth ? roomy : max(windowFrame.minX, x1 - hitSize)
+        case .right:
+            x0 = trafficLights.maxX
+            x1 = min(windowFrame.maxX, x0 + hitSize)
+        }
+        guard x1 - x0 >= minimumChevronWidth else { return nil }
+        return CGRect(x: x0.rounded(), y: y, width: (x1 - x0).rounded(), height: hitSize)
     }
 
     /// Whether a window of these bounds should carry the buttons. A window that exactly covers a

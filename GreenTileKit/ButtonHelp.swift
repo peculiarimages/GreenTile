@@ -8,6 +8,16 @@ public struct ButtonHelp: Equatable, Sendable {
     /// How to get the other row of buttons, which depends on what is showing and why.
     public let hint: String
 
+    /// Help for the chevron that sends a window to the display beside this one.
+    /// - Parameters:
+    ///   - name: the neighbouring display's name, e.g. "Thunderbolt Display".
+    ///   - side: which side that display is on.
+    public init(movingToDisplayNamed name: String, side: DisplaySide) {
+        title = side == .left ? "Move to Left Display" : "Move to Right Display"
+        detail = "Sends this window to \(name)"
+        hint = "Keeps its size and place in proportion"
+    }
+
     /// - Parameters:
     ///   - layout: the button's layout.
     ///   - thirdsByDefault: whether thirds are the default row (chosen with a right-click).

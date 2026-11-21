@@ -82,7 +82,7 @@ final class HelpBubble {
     private var watcher: Timer?
     private var awaySince: CFTimeInterval?
     /// The button panel the bubble is for, from when it is scheduled until it is hidden.
-    private weak var owner: OverlayPanel?
+    private weak var owner: ButtonPanel?
     /// The text on show, for the self-test.
     private(set) var current: ButtonHelp?
 
@@ -105,7 +105,7 @@ final class HelpBubble {
     // MARK: Pointer events from the button
 
     /// The pointer arrived on `owner`'s button.
-    func hoverBegan(for owner: OverlayPanel, help: ButtonHelp) {
+    func hoverBegan(for owner: ButtonPanel, help: ButtonHelp) {
         // Already up for this very button (the pointer left and came straight back): keep it as
         // it is rather than hiding and re-showing it.
         if self.owner === owner, window.isVisible {
@@ -127,7 +127,7 @@ final class HelpBubble {
 
     /// The pointer left `owner`'s button. A bubble that is up stays (the away timer decides when it
     /// goes); one that is still waiting for its pause is cancelled.
-    func hoverEnded(for owner: OverlayPanel) {
+    func hoverEnded(for owner: ButtonPanel) {
         guard self.owner === owner else { return }
         if window.isVisible {
             pending?.cancel()
@@ -140,13 +140,13 @@ final class HelpBubble {
     // MARK: Showing and hiding
 
     /// Swaps the text if the bubble is up for `owner` (the button changed under the pointer).
-    func refresh(for owner: OverlayPanel, help: ButtonHelp) {
+    func refresh(for owner: ButtonPanel, help: ButtonHelp) {
         guard self.owner === owner, window.isVisible, current != help else { return }
         show(help, for: owner)
     }
 
     /// Hides the bubble, or, when `owner` is given, only if it belongs to that button.
-    func hide(ifOwnedBy owner: OverlayPanel? = nil) {
+    func hide(ifOwnedBy owner: ButtonPanel? = nil) {
         if let owner, self.owner !== owner { return }
         pending?.cancel()
         pending = nil
@@ -157,7 +157,7 @@ final class HelpBubble {
         window.contentView = nil
     }
 
-    private func show(_ help: ButtonHelp, for owner: OverlayPanel) {
+    private func show(_ help: ButtonHelp, for owner: ButtonPanel) {
         let view = HelpBubbleView(help: help)
         window.contentView = view
         window.setContentSize(view.preferredSize)
