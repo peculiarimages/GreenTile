@@ -75,7 +75,7 @@ final class HelpBubble {
     /// Pause when moving from one button to the next while a bubble is already up.
     static let switchDelay: TimeInterval = 0.12
     /// How long the pointer may stay away from both the bubble and its button before it hides.
-    static let awayDelay: TimeInterval = 3
+    static let awayDelay: TimeInterval = 2
 
     private let window: NSPanel
     private var pending: DispatchWorkItem?

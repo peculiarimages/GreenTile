@@ -14,7 +14,7 @@ import GreenTileKit
 /// * `--selftest-tile <file>`: tiles a throwaway window to every layout on every display.
 /// * `--selftest-stacking <file>`: re-fronts a throwaway window and checks its buttons stay in front.
 /// * `--selftest-help <file>`: hovers buttons with synthetic events and a simulated pointer; checks the
-///   help bubble's timing, text, placement, the 3 s away delay, and its dismissal.
+///   help bubble's timing, text, placement, the 2 s away delay, and its dismissal.
 /// * `--selftest-modes <file>`: fakes the Option key; checks the halves/thirds swap, that each button
 ///   sits under its traffic light, and what every button does.
 enum DebugTools {
@@ -83,7 +83,7 @@ enum DebugTools {
 
     /// Hovers buttons with synthetic events and a simulated pointer, and checks the help bubble: its
     /// pause before showing, its text and placement, that it stays while the pointer is on the
-    /// bubble or on the button, that it goes 3 seconds after the pointer is away from both (and
+    /// bubble or on the button, that it goes 2 seconds after the pointer is away from both (and
     /// that coming back restarts that clock), and the ways it is dismissed at once.
     private static func selfTestHelp(report file: URL) {
         var report = "AX trusted: \(AXIsProcessTrusted())\n"
@@ -147,7 +147,7 @@ enum DebugTools {
             finish(); return
         }
         record("no bubble before hovering", !up())
-        record("the away delay is 3 s", HelpBubble.awayDelay == 3)
+        record("the away delay is 2 s", HelpBubble.awayDelay == 2)
 
         // 1. The pause, the text and the placement.
         enter(left)
@@ -165,21 +165,21 @@ enum DebugTools {
         }
 
         // 2. It stays while the pointer is on the button, however long.
-        pump(3.5)
-        record("stays while the pointer is on the button (3.5 s)", up())
+        pump(2.6)
+        record("stays while the pointer is on the button (2.6 s, longer than the delay)", up())
 
         // 3. It stays while the pointer is on the bubble, even though it has left the button.
         pointer = centre(of: bubble.frameForTesting)
         leave(left)
-        pump(3.5)
-        record("stays while the pointer is on the bubble (3.5 s)", up())
+        pump(2.6)
+        record("stays while the pointer is on the bubble (2.6 s, longer than the delay)", up())
 
-        // 4. It goes about 3 s after the pointer is away from both.
+        // 4. It goes about 2 s after the pointer is away from both.
         pointer = faraway
-        pump(2.0)
-        record("still up 2 s after the pointer went away", up())
-        pump(1.6)
-        record("gone 3.6 s after the pointer went away", !up())
+        pump(1.2)
+        record("still up 1.2 s after the pointer went away", up())
+        pump(1.4)
+        record("gone 2.6 s after the pointer went away", !up())
 
         // 5. Coming back restarts the clock.
         enter(left)
@@ -187,14 +187,14 @@ enum DebugTools {
         record("bubble is up again", shows(.leftHalf))
         leave(left)
         pointer = faraway
-        pump(2.0)
+        pump(1.2)
         pointer = centre(of: bubble.frameForTesting)   // back on the bubble: the clock restarts
         pump(0.5)
         pointer = faraway
-        pump(2.0)
-        record("2 s after the second departure it is still up (the clock restarted)", up())
-        pump(1.6)
-        record("and gone 3.6 s after the second departure", !up())
+        pump(1.2)
+        record("1.2 s after the second departure it is still up (the clock restarted)", up())
+        pump(1.4)
+        record("and gone 2.6 s after the second departure", !up())
 
         // 6. Going off the button and straight back on keeps the same bubble: no hide and re-show.
         enter(left)

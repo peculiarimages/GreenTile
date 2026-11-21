@@ -44,7 +44,7 @@ white for the rest.
   choice is remembered.
 - **Hover** a button for a moment and a small bubble says what it does and how to switch. It stays
   while the pointer is on the button or on the bubble, and goes once the pointer has been away from
-  both for 3 seconds (or straight away when you click).
+  both for 2 seconds (or straight away when you click).
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
@@ -128,7 +128,7 @@ Accessibility permission:
 | `--selftest-tile <file>` | tiles a throwaway window to every layout on every display and checks the result |
 | `--selftest-stacking <file>` | re-fronts a throwaway window repeatedly and checks its buttons come back in front |
 | `--selftest-modes <file>` | fakes the Option key and delivers right-/Control-click events; checks each button sits under its light, the halves/thirds switching, and every button's result |
-| `--selftest-help <file>` | hovers buttons with synthetic events and a simulated pointer; checks the help bubble's timing, text, placement, the 3 s away delay and its dismissal |
+| `--selftest-help <file>` | hovers buttons with synthetic events and a simulated pointer; checks the help bubble's timing, text, placement, the 2 s away delay and its dismissal |
 
 ## Known limits
 
