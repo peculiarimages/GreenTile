@@ -1,0 +1,128 @@
+import AppKit
+import ApplicationServices
+import ServiceManagement
+
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+    private enum Key {
+        static let enabled = "enabled"
+        static let thirdsByDefault = "thirdsByDefault"
+    }
+
+    private let overlay = OverlayController()
+    private var statusItem: NSStatusItem?
+    private var trustPoll: Timer?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        #if DEBUG
+        if DebugTools.runIfRequested() {
+            NSApp.terminate(nil)
+            return
+        }
+        #endif
+        UserDefaults.standard.register(defaults: [Key.enabled: true, Key.thirdsByDefault: false])
+        overlay.isEnabled = UserDefaults.standard.bool(forKey: Key.enabled)
+        overlay.thirdsByDefault = UserDefaults.standard.bool(forKey: Key.thirdsByDefault)
+        overlay.onThirdsByDefaultChange = { UserDefaults.standard.set($0, forKey: Key.thirdsByDefault) }
+        overlay.start()
+
+        buildStatusItem()
+
+        // Ask for Accessibility access once at launch (the system shows its own prompt), then keep
+        // checking so the menu icon reflects the change as soon as it is granted.
+        if !AXIsProcessTrusted() {
+            AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary)
+        }
+        trustPoll = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
+            self?.refreshStatusIcon()
+        }
+        refreshStatusIcon()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        overlay.stop()
+    }
+
+    // MARK: Status item
+
+    private func buildStatusItem() {
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        let menu = NSMenu()
+        menu.delegate = self
+        item.menu = menu
+        statusItem = item
+    }
+
+    private func refreshStatusIcon() {
+        let active = overlay.isEnabled && AXIsProcessTrusted()
+        let image = NSImage(systemSymbolName: "rectangle.split.2x1", accessibilityDescription: "GreenTile")
+        image?.isTemplate = true
+        statusItem?.button?.image = image
+        statusItem?.button?.appearsDisabled = !active
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+
+        let enabled = NSMenuItem(title: "Show Tiling Buttons", action: #selector(toggleEnabled), keyEquivalent: "")
+        enabled.target = self
+        enabled.state = overlay.isEnabled ? .on : .off
+        menu.addItem(enabled)
+
+        let thirds = NSMenuItem(title: "Thirds Instead of Halves", action: #selector(toggleThirds), keyEquivalent: "")
+        thirds.target = self
+        thirds.state = overlay.thirdsByDefault ? .on : .off
+        menu.addItem(thirds)
+
+        menu.addItem(.separator())
+
+        if AXIsProcessTrusted() {
+            let ok = NSMenuItem(title: "Accessibility Access Granted", action: nil, keyEquivalent: "")
+            ok.isEnabled = false
+            menu.addItem(ok)
+        } else {
+            let fix = NSMenuItem(title: "Grant Accessibility Access…",
+                                 action: #selector(openAccessibilitySettings), keyEquivalent: "")
+            fix.target = self
+            menu.addItem(fix)
+        }
+
+        let login = NSMenuItem(title: "Open at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+        login.target = self
+        login.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        menu.addItem(login)
+
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "Quit GreenTile", action: #selector(NSApplication.terminate(_:)),
+                                keyEquivalent: "q"))
+    }
+
+    // MARK: Menu actions
+
+    @objc private func toggleEnabled() {
+        overlay.isEnabled.toggle()
+        UserDefaults.standard.set(overlay.isEnabled, forKey: Key.enabled)
+        refreshStatusIcon()
+    }
+
+    @objc private func toggleThirds() {
+        overlay.thirdsByDefault.toggle()
+    }
+
+    @objc private func openAccessibilitySettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    @objc private func toggleLaunchAtLogin() {
+        do {
+            if SMAppService.mainApp.status == .enabled {
+                try SMAppService.mainApp.unregister()
+            } else {
+                try SMAppService.mainApp.register()
+            }
+        } catch {
+            NSLog("GreenTile: could not change login item: \(error.localizedDescription)")
+        }
+    }
+}

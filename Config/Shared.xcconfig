@@ -1,0 +1,13 @@
+// Build settings shared by every target. Applied to Debug and Release (see project.yml).
+
+// By default the app is signed "to run locally" (ad-hoc, identity "-"). That works on any Mac with
+// no Apple developer account. The catch: macOS ties the Accessibility permission to the app's code
+// signature, and an ad-hoc signature changes with every build, so you may have to grant the
+// permission again after rebuilding. For a stable signature, create Config/Local.xcconfig (see
+// Local.xcconfig.example) and name your own signing identity and team there.
+CODE_SIGN_STYLE = Manual
+CODE_SIGN_IDENTITY = -
+DEVELOPMENT_TEAM =
+
+// Your own, untracked overrides. The leading "?" makes the file optional.
+#include? "Local.xcconfig"

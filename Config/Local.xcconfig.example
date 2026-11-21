@@ -1,0 +1,9 @@
+// Copy this file to Config/Local.xcconfig (which git ignores) and fill in your own values.
+// A stable signature keeps macOS's Accessibility permission valid across rebuilds.
+//
+// List your signing identities with:  security find-identity -v -p codesigning
+// Your team ID is the 10-character code in your developer certificate, shown in Xcode under
+// Settings > Accounts > (your team).
+
+CODE_SIGN_IDENTITY = Apple Development
+DEVELOPMENT_TEAM = YOURTEAMID

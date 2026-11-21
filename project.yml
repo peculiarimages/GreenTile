@@ -1,0 +1,78 @@
+name: GreenTile
+
+options:
+  bundleIdPrefix: app.greentile
+  createIntermediateGroups: true
+  deploymentTarget:
+    macOS: "14.0"
+
+# Signing lives in Config/Shared.xcconfig (ad-hoc by default) and, optionally, the untracked
+# Config/Local.xcconfig, so no personal team ID is committed.
+configFiles:
+  Debug: Config/Shared.xcconfig
+  Release: Config/Shared.xcconfig
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+  # Pure geometry and layout logic. No AppKit/AX, so it is fully unit-testable.
+  GreenTileKit:
+    type: framework
+    platform: macOS
+    sources: [GreenTileKit]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.greentile.GreenTileKit
+        GENERATE_INFOPLIST_FILE: YES
+        DEFINES_MODULE: YES
+        SKIP_INSTALL: YES
+
+  GreenTile:
+    type: application
+    platform: macOS
+    sources: [GreenTile]
+    dependencies:
+      - target: GreenTileKit
+        embed: true
+    info:
+      path: GreenTile/Info.plist
+      properties:
+        CFBundleName: GreenTile
+        CFBundleDisplayName: GreenTile
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSUIElement: true            # menu-bar utility, no Dock icon
+        LSMinimumSystemVersion: "14.0"
+        NSHumanReadableCopyright: "Copyright (c) 2026 peculiarimages. MIT License."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.greentile.GreenTile
+        ENABLE_APP_SANDBOX: NO       # the Accessibility API cannot be used from the sandbox
+        COMBINE_HIDPI_IMAGES: YES
+
+  GreenTileKitTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [GreenTileKitTests]
+    dependencies:
+      - target: GreenTileKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.greentile.GreenTileKitTests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  GreenTile:
+    build:
+      targets:
+        GreenTile: all
+        GreenTileKit: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: [GreenTileKitTests]

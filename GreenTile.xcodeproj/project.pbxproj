@@ -1,0 +1,660 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1373EABFCC0C546F275F7BB7 /* TileLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */; };
+		15366ED4521D719B93666A19 /* WindowCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DA5EDC94ACA4B0F226AC3C /* WindowCatalog.swift */; };
+		1B0C8982F1CA95EECEC7309E /* TileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C4CDE0887630B5AE604746 /* TileButton.swift */; };
+		218A5E13EE13C5535038DC08 /* OverlayPlacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */; };
+		33BADB196BE1890E0DFA5B78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D5C467E98FF8BA4D02EAE /* main.swift */; };
+		46114E242523AE312AD4200C /* HelpBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */; };
+		53C2D2AA1CC8AA6DB7976C1B /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */; };
+		53D0DAAF151C30FA4FD955A2 /* AX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15FE672E00E47D62DA9FDAA /* AX.swift */; };
+		54F3B67210CBA9B26D357BB0 /* Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B3668DD48ED9710DF790A7 /* Display.swift */; };
+		66C8B09E55DD23DF9A8F9690 /* GreenTileKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; };
+		691D972881893DCD8601BF78 /* DebugTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5729CDE331BC603794CA7F /* DebugTools.swift */; };
+		85DAD9A7A78F6E2532368E46 /* TileLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22863209809FDDF12E1679C /* TileLayout.swift */; };
+		8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */; };
+		96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */; };
+		B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BAA94FC07D28EA45376034 /* ButtonHelp.swift */; };
+		C2C01AC1F6DDB3A7A3674D58 /* GreenTileKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CCDF3F8C3908C0D2D2D29FBA /* ScreenGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */; };
+		D4D1A892B687162D44661BD1 /* GreenTileKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D9EC71C47C5ACB19A32D6D71 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2284F49BBE368468499C1080 /* OverlayController.swift */; };
+		E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */; };
+		EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */; };
+		F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */; };
+		F44036D3AB9CB6A28E4211D9 /* GreenTileKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5449E3F54B710365F197AD39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 754CEE3F2F4B7EE6089A9914 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A7200D5668924C58A341EE0A;
+			remoteInfo = GreenTileKit;
+		};
+		97847825869C98BCC3174A65 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 754CEE3F2F4B7EE6089A9914 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A7200D5668924C58A341EE0A;
+			remoteInfo = GreenTileKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0E19D149B0C9AF00DD6AF07D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D4D1A892B687162D44661BD1 /* GreenTileKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B0C7680D2E44E95F86085B3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C2C01AC1F6DDB3A7A3674D58 /* GreenTileKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		169D229CE196B4E4B2E59027 /* GreenTileKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GreenTileKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2284F49BBE368468499C1080 /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
+		27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonHelpTests.swift; sourceTree = "<group>"; };
+		32BAA94FC07D28EA45376034 /* ButtonHelp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonHelp.swift; sourceTree = "<group>"; };
+		43DA5EDC94ACA4B0F226AC3C /* WindowCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCatalog.swift; sourceTree = "<group>"; };
+		4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpBubble.swift; sourceTree = "<group>"; };
+		4C5729CDE331BC603794CA7F /* DebugTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugTools.swift; sourceTree = "<group>"; };
+		69C4CDE0887630B5AE604746 /* TileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileButton.swift; sourceTree = "<group>"; };
+		6CAC7CC035B12BE7665989B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		797E8238174D8AEA1D339B9C /* GreenTileKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GreenTileKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileLayoutTests.swift; sourceTree = "<group>"; };
+		998D46ED752DDE6F65961F2C /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPlacement.swift; sourceTree = "<group>"; };
+		A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
+		AAB01643AF95ECCD4E18C4B5 /* GreenTile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GreenTile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B22863209809FDDF12E1679C /* TileLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileLayout.swift; sourceTree = "<group>"; };
+		B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometryTests.swift; sourceTree = "<group>"; };
+		C15FE672E00E47D62DA9FDAA /* AX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AX.swift; sourceTree = "<group>"; };
+		C21D5C467E98FF8BA4D02EAE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		D3B3668DD48ED9710DF790A7 /* Display.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Display.swift; sourceTree = "<group>"; };
+		D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometry.swift; sourceTree = "<group>"; };
+		DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowActions.swift; sourceTree = "<group>"; };
+		FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPlacementTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		19987726EB84E29D1F633061 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F44036D3AB9CB6A28E4211D9 /* GreenTileKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED34603E7048063AEBA6CA14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66C8B09E55DD23DF9A8F9690 /* GreenTileKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0FCC9A42E8CE692315E55054 /* Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */,
+				2284F49BBE368468499C1080 /* OverlayController.swift */,
+				A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */,
+				69C4CDE0887630B5AE604746 /* TileButton.swift */,
+			);
+			path = Overlay;
+			sourceTree = "<group>";
+		};
+		22B8AEB9F9F83839A0EDF76C /* GreenTile */ = {
+			isa = PBXGroup;
+			children = (
+				6CAC7CC035B12BE7665989B0 /* Info.plist */,
+				5CC0EDAC3991321D21156859 /* Accessibility */,
+				51DE43C5C31724EF628D09FB /* Actions */,
+				E5E4457E56D4141B12E28615 /* App */,
+				0FCC9A42E8CE692315E55054 /* Overlay */,
+			);
+			path = GreenTile;
+			sourceTree = "<group>";
+		};
+		43B2B1BAB8FABA99ECB8F19A /* GreenTileKit */ = {
+			isa = PBXGroup;
+			children = (
+				32BAA94FC07D28EA45376034 /* ButtonHelp.swift */,
+				9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */,
+				D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */,
+				B22863209809FDDF12E1679C /* TileLayout.swift */,
+			);
+			path = GreenTileKit;
+			sourceTree = "<group>";
+		};
+		51DE43C5C31724EF628D09FB /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */,
+			);
+			path = Actions;
+			sourceTree = "<group>";
+		};
+		5CC0EDAC3991321D21156859 /* Accessibility */ = {
+			isa = PBXGroup;
+			children = (
+				C15FE672E00E47D62DA9FDAA /* AX.swift */,
+				D3B3668DD48ED9710DF790A7 /* Display.swift */,
+				43DA5EDC94ACA4B0F226AC3C /* WindowCatalog.swift */,
+			);
+			path = Accessibility;
+			sourceTree = "<group>";
+		};
+		826C9CEA5273E0FE9A1C2E5D = {
+			isa = PBXGroup;
+			children = (
+				CDEDD3BD856E1C87B9BF6D42 /* Config */,
+				22B8AEB9F9F83839A0EDF76C /* GreenTile */,
+				43B2B1BAB8FABA99ECB8F19A /* GreenTileKit */,
+				B148B4B3382A9E6204697CBC /* GreenTileKitTests */,
+				AD3C088E2BAE675FBE2C4E83 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AD3C088E2BAE675FBE2C4E83 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AAB01643AF95ECCD4E18C4B5 /* GreenTile.app */,
+				797E8238174D8AEA1D339B9C /* GreenTileKit.framework */,
+				169D229CE196B4E4B2E59027 /* GreenTileKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B148B4B3382A9E6204697CBC /* GreenTileKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */,
+				FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */,
+				B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */,
+				97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */,
+			);
+			path = GreenTileKitTests;
+			sourceTree = "<group>";
+		};
+		CDEDD3BD856E1C87B9BF6D42 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				998D46ED752DDE6F65961F2C /* Shared.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		E5E4457E56D4141B12E28615 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */,
+				4C5729CDE331BC603794CA7F /* DebugTools.swift */,
+				C21D5C467E98FF8BA4D02EAE /* main.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0A3656E7BBF193E989B54A11 /* GreenTileKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C8B2DE2058B9006C6CA6A9D7 /* Build configuration list for PBXNativeTarget "GreenTileKitTests" */;
+			buildPhases = (
+				DDEED2CB7AE4286E1F5C2704 /* Sources */,
+				ED34603E7048063AEBA6CA14 /* Frameworks */,
+				8B0C7680D2E44E95F86085B3 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2EB237B019A4142DC4E5F35D /* PBXTargetDependency */,
+			);
+			name = GreenTileKitTests;
+			packageProductDependencies = (
+			);
+			productName = GreenTileKitTests;
+			productReference = 169D229CE196B4E4B2E59027 /* GreenTileKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		91339EE43DA50CBECD28562A /* GreenTile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8AB3C44FD103C2152B732501 /* Build configuration list for PBXNativeTarget "GreenTile" */;
+			buildPhases = (
+				A4743A87E42F743ED5B9AB01 /* Sources */,
+				19987726EB84E29D1F633061 /* Frameworks */,
+				0E19D149B0C9AF00DD6AF07D /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0A5EB7ECBF7E66CAFC37E81A /* PBXTargetDependency */,
+			);
+			name = GreenTile;
+			packageProductDependencies = (
+			);
+			productName = GreenTile;
+			productReference = AAB01643AF95ECCD4E18C4B5 /* GreenTile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A7200D5668924C58A341EE0A /* GreenTileKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F294CEB6C9A1C238D7D0DF7D /* Build configuration list for PBXNativeTarget "GreenTileKit" */;
+			buildPhases = (
+				E2842DFF9FB69D1039410F48 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GreenTileKit;
+			packageProductDependencies = (
+			);
+			productName = GreenTileKit;
+			productReference = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		754CEE3F2F4B7EE6089A9914 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0A3656E7BBF193E989B54A11 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					91339EE43DA50CBECD28562A = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					A7200D5668924C58A341EE0A = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 2F2E062D2DE9A5B6D9143297 /* Build configuration list for PBXProject "GreenTile" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 826C9CEA5273E0FE9A1C2E5D;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = AD3C088E2BAE675FBE2C4E83 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A7200D5668924C58A341EE0A /* GreenTileKit */,
+				91339EE43DA50CBECD28562A /* GreenTile */,
+				0A3656E7BBF193E989B54A11 /* GreenTileKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A4743A87E42F743ED5B9AB01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53D0DAAF151C30FA4FD955A2 /* AX.swift in Sources */,
+				96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */,
+				691D972881893DCD8601BF78 /* DebugTools.swift in Sources */,
+				54F3B67210CBA9B26D357BB0 /* Display.swift in Sources */,
+				46114E242523AE312AD4200C /* HelpBubble.swift in Sources */,
+				D9EC71C47C5ACB19A32D6D71 /* OverlayController.swift in Sources */,
+				53C2D2AA1CC8AA6DB7976C1B /* OverlayPanel.swift in Sources */,
+				1B0C8982F1CA95EECEC7309E /* TileButton.swift in Sources */,
+				8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */,
+				15366ED4521D719B93666A19 /* WindowCatalog.swift in Sources */,
+				33BADB196BE1890E0DFA5B78 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DDEED2CB7AE4286E1F5C2704 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */,
+				E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */,
+				F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */,
+				1373EABFCC0C546F275F7BB7 /* TileLayoutTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2842DFF9FB69D1039410F48 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */,
+				218A5E13EE13C5535038DC08 /* OverlayPlacement.swift in Sources */,
+				CCDF3F8C3908C0D2D2D29FBA /* ScreenGeometry.swift in Sources */,
+				85DAD9A7A78F6E2532368E46 /* TileLayout.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0A5EB7ECBF7E66CAFC37E81A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A7200D5668924C58A341EE0A /* GreenTileKit */;
+			targetProxy = 5449E3F54B710365F197AD39 /* PBXContainerItemProxy */;
+		};
+		2EB237B019A4142DC4E5F35D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A7200D5668924C58A341EE0A /* GreenTileKit */;
+			targetProxy = 97847825869C98BCC3174A65 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		184B3F3EBCFAEBCB59F37F5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 998D46ED752DDE6F65961F2C /* Shared.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		260B662BAA7B13BF7963E7BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.greentile.GreenTileKitTests;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		31F0DDCD9866A1F19D6DFBA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.greentile.GreenTileKit;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		5F2C885B7273772AC9047925 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 998D46ED752DDE6F65961F2C /* Shared.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		87776CE38C3A9786CA5F1BBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = GreenTile/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.greentile.GreenTile;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		90A02C007756B2DBE30FE70C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.greentile.GreenTileKit;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		D7B06B6A1C259E29A9AE32EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.greentile.GreenTileKitTests;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E4AC50974DFB290BEC18AE9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = GreenTile/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.greentile.GreenTile;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2F2E062D2DE9A5B6D9143297 /* Build configuration list for PBXProject "GreenTile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5F2C885B7273772AC9047925 /* Debug */,
+				184B3F3EBCFAEBCB59F37F5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8AB3C44FD103C2152B732501 /* Build configuration list for PBXNativeTarget "GreenTile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				87776CE38C3A9786CA5F1BBD /* Debug */,
+				E4AC50974DFB290BEC18AE9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C8B2DE2058B9006C6CA6A9D7 /* Build configuration list for PBXNativeTarget "GreenTileKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D7B06B6A1C259E29A9AE32EB /* Debug */,
+				260B662BAA7B13BF7963E7BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F294CEB6C9A1C238D7D0DF7D /* Build configuration list for PBXNativeTarget "GreenTileKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31F0DDCD9866A1F19D6DFBA0 /* Debug */,
+				90A02C007756B2DBE30FE70C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 754CEE3F2F4B7EE6089A9914 /* Project object */;
+}

@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+.build/
+
+# Personal signing overrides (see Config/Local.xcconfig.example)
+Config/Local.xcconfig
