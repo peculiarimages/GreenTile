@@ -12,10 +12,17 @@ public enum OverlayPlacement {
     public static let hitSize: CGFloat = 16
     /// Invisible margin around each circle that still counts as a click on it.
     public static var hitSlop: CGFloat { (hitSize - buttonDiameter) / 2 }
-    /// Distance from the bottom of the traffic lights to the centre of the round buttons. At half
-    /// of `hitSize` the click area starts exactly at the bottom edge of the lights, so this is as
-    /// high as the buttons can go without their click areas overlapping the lights.
+    /// Distance from the bottom of the traffic lights to the middle of each button's click area. At
+    /// half of `hitSize` the click area starts exactly at the bottom edge of the lights, which is as
+    /// high as the click areas can go without overlapping them. (The circle itself sits a little
+    /// higher still: see `circleNudgeY`.)
     public static let centreBelow: CGFloat = 8
+    /// How far the drawn circle sits from the middle of its click area, in points, measured the way
+    /// y grows on screen (negative is up). The circle is moved inside the panel rather than moving
+    /// the panel itself, so every panel stays on whole points (crisp on displays that are not
+    /// Retina) and its click area never reaches into the traffic lights. It must stay within
+    /// `hitSlop` so the circle remains inside the click area.
+    public static let circleNudgeY: CGFloat = -0.5
     /// Smaller windows (dialogs, utility panels, Stage Manager thumbnails) get no buttons.
     public static let minimumWindowSize = CGSize(width: 220, height: 80)
 

@@ -40,6 +40,23 @@ final class OverlayPlacementTests: XCTestCase {
         // The click area starts right at the bottom of the lights, without overlapping them.
         XCTAssertEqual(panel.minY, lights.maxY)
         XCTAssertEqual(OverlayPlacement.centreBelow, 8)
+        // The circle itself is drawn half a point higher than the middle of its click area, so its
+        // centre is 7.5 pt below the lights.
+        XCTAssertEqual(OverlayPlacement.circleNudgeY, -0.5)
+        XCTAssertEqual(panel.midY + OverlayPlacement.circleNudgeY, lights.maxY + 7.5)
+    }
+
+    /// The nudge moves the circle, not the panel, so it must never push the circle out of its panel.
+    func testNudgedCircleStaysInsideItsClickArea() {
+        let panel = OverlayPlacement.frame(column: 1, trafficLights: lights)
+        let centre = CGPoint(x: panel.midX, y: panel.midY + OverlayPlacement.circleNudgeY)
+        let circle = CGRect(x: centre.x - OverlayPlacement.buttonDiameter / 2,
+                            y: centre.y - OverlayPlacement.buttonDiameter / 2,
+                            width: OverlayPlacement.buttonDiameter, height: OverlayPlacement.buttonDiameter)
+        XCTAssertTrue(panel.contains(circle))
+        XCTAssertLessThanOrEqual(abs(OverlayPlacement.circleNudgeY), OverlayPlacement.hitSlop)
+        // The circle is still clear of the traffic lights above it.
+        XCTAssertGreaterThan(circle.minY, lights.maxY)
     }
 
     func testPanelsNeverOverlapEachOtherOrTheLights() {

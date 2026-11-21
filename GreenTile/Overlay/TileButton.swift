@@ -113,8 +113,10 @@ final class TileButton: NSView {
         let shade: CGFloat = isPressed ? 0.17 : (isHovering ? 0.07 : 0)
         func tone(_ color: NSColor) -> NSColor { color.blended(withFraction: shade, of: .black) ?? color }
 
-        // The circle sits in the middle of the (larger) click area.
+        // The circle sits in the middle of the (larger) click area, nudged a little (this view is
+        // flipped, so a negative offset is up on screen).
         let disc = bounds.insetBy(dx: OverlayPlacement.hitSlop, dy: OverlayPlacement.hitSlop)
+            .offsetBy(dx: 0, dy: OverlayPlacement.circleNudgeY)
         let rimWidth: CGFloat = 0.8
         let inner = disc.insetBy(dx: rimWidth, dy: rimWidth)
         let outerPath = NSBezierPath(ovalIn: disc)
