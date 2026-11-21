@@ -42,14 +42,15 @@ targets:
       properties:
         CFBundleName: GreenTile
         CFBundleDisplayName: GreenTile
-        CFBundleShortVersionString: "0.1.1"
-        CFBundleVersion: "2"
+        CFBundleShortVersionString: "0.1.2"
+        CFBundleVersion: "3"
         LSUIElement: true            # menu-bar utility, no Dock icon
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: "Copyright (c) 2026 peculiarimages. MIT License."
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.greentile.GreenTile
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon   # GreenTile/Assets.xcassets/AppIcon.appiconset
         ENABLE_APP_SANDBOX: NO       # the Accessibility API cannot be used from the sandbox
         COMBINE_HIDPI_IMAGES: YES
 

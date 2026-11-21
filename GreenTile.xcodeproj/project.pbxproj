@@ -24,11 +24,14 @@
 		8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */; };
 		9419B39892C359383809ADF7 /* ButtonColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F3DB80F7D3B873936EE12B /* ButtonColors.swift */; };
 		96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */; };
+		A983D6F835AA15C7C512DDDF /* ProjectLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F341AFAF7330C862F45BC976 /* ProjectLinks.swift */; };
 		B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BAA94FC07D28EA45376034 /* ButtonHelp.swift */; };
+		BCB8B926E9332C4EAED76867 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 624D2468D30EDC5E55DA4989 /* Assets.xcassets */; };
 		C2C01AC1F6DDB3A7A3674D58 /* GreenTileKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C3C9A9EF2C1EF0A10062B41F /* ChevronButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CDAA3F7096FB7ECE938C11B /* ChevronButton.swift */; };
 		CCDF3F8C3908C0D2D2D29FBA /* ScreenGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */; };
 		D4D1A892B687162D44661BD1 /* GreenTileKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D5C7FD31AB42F394A767DB89 /* ProjectLinksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79285BD21FBC477867C54EB4 /* ProjectLinksTests.swift */; };
 		D9EC71C47C5ACB19A32D6D71 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2284F49BBE368468499C1080 /* OverlayController.swift */; };
 		E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */; };
 		EC7BC302CEB5A7F51B95D5BC /* DisplayNeighbourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F99538315E410E35006323 /* DisplayNeighbourTests.swift */; };
@@ -88,11 +91,13 @@
 		43DA5EDC94ACA4B0F226AC3C /* WindowCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCatalog.swift; sourceTree = "<group>"; };
 		4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpBubble.swift; sourceTree = "<group>"; };
 		4C5729CDE331BC603794CA7F /* DebugTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugTools.swift; sourceTree = "<group>"; };
+		624D2468D30EDC5E55DA4989 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6460A023E60D4B8591659E76 /* ButtonPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonPalette.swift; sourceTree = "<group>"; };
 		64F99538315E410E35006323 /* DisplayNeighbourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayNeighbourTests.swift; sourceTree = "<group>"; };
 		68F3DB80F7D3B873936EE12B /* ButtonColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColors.swift; sourceTree = "<group>"; };
 		69C4CDE0887630B5AE604746 /* TileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileButton.swift; sourceTree = "<group>"; };
 		6CAC7CC035B12BE7665989B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		79285BD21FBC477867C54EB4 /* ProjectLinksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectLinksTests.swift; sourceTree = "<group>"; };
 		797E8238174D8AEA1D339B9C /* GreenTileKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GreenTileKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColorsTests.swift; sourceTree = "<group>"; };
 		97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileLayoutTests.swift; sourceTree = "<group>"; };
@@ -108,6 +113,7 @@
 		D3B3668DD48ED9710DF790A7 /* Display.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Display.swift; sourceTree = "<group>"; };
 		D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometry.swift; sourceTree = "<group>"; };
 		DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowActions.swift; sourceTree = "<group>"; };
+		F341AFAF7330C862F45BC976 /* ProjectLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectLinks.swift; sourceTree = "<group>"; };
 		FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPlacementTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,6 +153,7 @@
 		22B8AEB9F9F83839A0EDF76C /* GreenTile */ = {
 			isa = PBXGroup;
 			children = (
+				624D2468D30EDC5E55DA4989 /* Assets.xcassets */,
 				6CAC7CC035B12BE7665989B0 /* Info.plist */,
 				5CC0EDAC3991321D21156859 /* Accessibility */,
 				51DE43C5C31724EF628D09FB /* Actions */,
@@ -162,6 +169,7 @@
 				68F3DB80F7D3B873936EE12B /* ButtonColors.swift */,
 				32BAA94FC07D28EA45376034 /* ButtonHelp.swift */,
 				9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */,
+				F341AFAF7330C862F45BC976 /* ProjectLinks.swift */,
 				D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */,
 				B22863209809FDDF12E1679C /* TileLayout.swift */,
 			);
@@ -214,6 +222,7 @@
 				27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */,
 				64F99538315E410E35006323 /* DisplayNeighbourTests.swift */,
 				FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */,
+				79285BD21FBC477867C54EB4 /* ProjectLinksTests.swift */,
 				B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */,
 				97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */,
 			);
@@ -266,6 +275,7 @@
 			buildConfigurationList = 8AB3C44FD103C2152B732501 /* Build configuration list for PBXNativeTarget "GreenTile" */;
 			buildPhases = (
 				A4743A87E42F743ED5B9AB01 /* Sources */,
+				5EF0300A912C0E4CFCF4869B /* Resources */,
 				19987726EB84E29D1F633061 /* Frameworks */,
 				0E19D149B0C9AF00DD6AF07D /* Embed Frameworks */,
 			);
@@ -342,6 +352,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		5EF0300A912C0E4CFCF4869B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB8B926E9332C4EAED76867 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A4743A87E42F743ED5B9AB01 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -371,6 +392,7 @@
 				EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */,
 				EC7BC302CEB5A7F51B95D5BC /* DisplayNeighbourTests.swift in Sources */,
 				E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */,
+				D5C7FD31AB42F394A767DB89 /* ProjectLinksTests.swift in Sources */,
 				F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */,
 				1373EABFCC0C546F275F7BB7 /* TileLayoutTests.swift in Sources */,
 			);
@@ -383,6 +405,7 @@
 				9419B39892C359383809ADF7 /* ButtonColors.swift in Sources */,
 				B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */,
 				218A5E13EE13C5535038DC08 /* OverlayPlacement.swift in Sources */,
+				A983D6F835AA15C7C512DDDF /* ProjectLinks.swift in Sources */,
 				CCDF3F8C3908C0D2D2D29FBA /* ScreenGeometry.swift in Sources */,
 				85DAD9A7A78F6E2532368E46 /* TileLayout.swift in Sources */,
 			);

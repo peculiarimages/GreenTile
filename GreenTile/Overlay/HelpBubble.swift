@@ -1,9 +1,98 @@
 import AppKit
 import GreenTileKit
 
-/// The contents of the help bubble: a bold name, what a click does, and a quieter hint line.
+/// The link row at the foot of every help bubble: the app icon, three times as tall as the round
+/// tiling buttons, and the project's address. The whole row is one click target.
+final class HelpLinkView: NSView {
+    /// The icon is three times as tall as the round tiling buttons.
+    static let iconSide = OverlayPlacement.buttonDiameter * 3
+    private static let gap: CGFloat = 8
+    private static let font = NSFont.systemFont(ofSize: 11)
+
+    /// Called when the row is clicked.
+    var onOpen: (() -> Void)?
+    private var isHovering = false { didSet { needsDisplay = true } }
+
+    /// Width the row needs: the icon, a gap, and the address.
+    static var preferredWidth: CGFloat {
+        let text = (ProjectLinks.repository as NSString).size(withAttributes: [.font: font])
+        return iconSide + gap + ceil(text.width) + 2
+    }
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        setAccessibilityRole(.link)
+        setAccessibilityLabel("Open the GreenTile project page on GitHub")
+    }
+
+    required init?(coder: NSCoder) { fatalError("not used") }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func updateTrackingAreas() {
+        trackingAreas.forEach(removeTrackingArea)
+        addTrackingArea(NSTrackingArea(rect: .zero,
+                                       options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect],
+                                       owner: self, userInfo: nil))
+        super.updateTrackingAreas()
+    }
+
+    override func mouseEntered(with event: NSEvent) { isHovering = true }
+    override func mouseExited(with event: NSEvent) { isHovering = false }
+    override func mouseDown(with event: NSEvent) {}
+
+    override func mouseUp(with event: NSEvent) {
+        guard bounds.contains(convert(event.locationInWindow, from: nil)) else { return }
+        onOpen?()
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let iconRect = CGRect(x: 0, y: (bounds.height - Self.iconSide) / 2, width: Self.iconSide, height: Self.iconSide)
+        if let icon = NSApp.applicationIconImage {
+            // The icon's drawn shape is the middle 824 of its 1024 points; the rest is margin and
+            // shadow, so only that middle part is drawn, at exactly `iconSide`.
+            let size = icon.size
+            let body = CGRect(x: size.width * 100 / 1024, y: size.height * 100 / 1024,
+                              width: size.width * 824 / 1024, height: size.height * 824 / 1024)
+            icon.draw(in: iconRect, from: body, operation: .sourceOver, fraction: isHovering ? 1 : 0.92,
+                      respectFlipped: true, hints: [.interpolation: NSImageInterpolation.high.rawValue])
+        }
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Self.font,
+            .foregroundColor: isHovering ? NSColor.labelColor : NSColor.secondaryLabelColor,
+            .underlineStyle: isHovering ? NSUnderlineStyle.single.rawValue : 0,
+        ]
+        let text = NSAttributedString(string: ProjectLinks.repository, attributes: attributes)
+        text.draw(at: CGPoint(x: iconRect.maxX + Self.gap, y: (bounds.height - text.size().height) / 2))
+    }
+}
+
+/// A panel over just the link row of the help bubble. It takes mouse clicks (the bubble itself
+/// ignores them, so it never blocks the window beneath) and never takes focus.
+final class HelpLinkPanel: NSPanel {
+    init() {
+        super.init(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: true)
+        isOpaque = false
+        backgroundColor = .clear
+        hasShadow = false
+        level = .popUpMenu
+        hidesOnDeactivate = false
+        isReleasedWhenClosed = false
+        collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle, .transient]
+    }
+
+    override var canBecomeKey: Bool { false }
+    override var canBecomeMain: Bool { false }
+}
+
+/// The contents of the help bubble: a bold name, what a click does, a quieter hint line, and, after
+/// two blank lines, room for the link row.
 final class HelpBubbleView: NSVisualEffectView {
     private(set) var preferredSize: CGSize = .zero
+    /// Where the link row goes, in this view's coordinates (y up).
+    private(set) var footerRect: CGRect = .zero
+    /// The last line of text, in this view's coordinates.
+    private(set) var lastTextFrame: CGRect = .zero
 
     init(help: ButtonHelp) {
         super.init(frame: .zero)
@@ -18,11 +107,16 @@ final class HelpBubbleView: NSVisualEffectView {
             Self.label(help.hint, font: .systemFont(ofSize: 11), color: .secondaryLabelColor),
         ]
         let padX: CGFloat = 10, padY: CGFloat = 7, spacing: CGFloat = 2
-        let textWidth = labels.map { $0.intrinsicContentSize.width }.max() ?? 0
+        let lineHeight = labels[2].intrinsicContentSize.height
+        let blankLines: CGFloat = 2
+        let linkGap = blankLines * lineHeight
+        let footerHeight = HelpLinkView.iconSide
+        let textWidth = max(labels.map { $0.intrinsicContentSize.width }.max() ?? 0, HelpLinkView.preferredWidth)
         let textHeight = labels.reduce(CGFloat(0)) { $0 + $1.intrinsicContentSize.height } + spacing * CGFloat(labels.count - 1)
         // A few points of slack: a text field clips its last glyph if its frame is exactly as wide as
         // the measured text.
-        let size = CGSize(width: ceil(textWidth) + 2 * padX + 6, height: ceil(textHeight) + 2 * padY)
+        let size = CGSize(width: ceil(textWidth) + 2 * padX + 6,
+                          height: ceil(textHeight) + linkGap + footerHeight + 2 * padY)
         setFrameSize(size)
         preferredSize = size
 
@@ -35,9 +129,17 @@ final class HelpBubbleView: NSVisualEffectView {
             addSubview(label)
             y -= spacing
         }
+        lastTextFrame = labels[2].frame
+        // The text fields draw their glyphs 2 pt in from their frames: line the link row up with them.
+        footerRect = CGRect(x: padX + 2, y: padY, width: size.width - 2 * padX - 2, height: footerHeight)
     }
 
     required init?(coder: NSCoder) { fatalError("not used") }
+
+    /// The clickable row that goes over `footerRect` (in its own panel; see `HelpLinkPanel`).
+    func makeLinkView() -> HelpLinkView {
+        HelpLinkView(frame: CGRect(origin: .zero, size: footerRect.size))
+    }
 
     private static func label(_ text: String, font: NSFont, color: NSColor) -> NSTextField {
         let field = NSTextField(labelWithString: text)
@@ -78,6 +180,8 @@ final class HelpBubble {
     static let awayDelay: TimeInterval = 2
 
     private let window: NSPanel
+    /// The clickable link row over the foot of the bubble.
+    private let linkPanel = HelpLinkPanel()
     private var pending: DispatchWorkItem?
     private var watcher: Timer?
     private var awaySince: CFTimeInterval?
@@ -88,6 +192,16 @@ final class HelpBubble {
 
     /// Where the pointer is, in screen coordinates. Replaced only by the self-test.
     var pointerLocation: () -> CGPoint = { NSEvent.mouseLocation }
+
+    /// Opens an address in the default browser. Replaced only by the self-test.
+    var openURL: (URL) -> Void = { NSWorkspace.shared.open($0) }
+
+    /// Whether `other` is one of the bubble's own windows (a click on the link row must not count as
+    /// a click elsewhere that dismisses the bubble).
+    func ownsWindow(_ other: NSWindow?) -> Bool {
+        guard let other else { return false }
+        return other === window || other === linkPanel
+    }
 
     init() {
         window = NSPanel(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel],
@@ -153,8 +267,30 @@ final class HelpBubble {
         stopWatching()
         self.owner = nil
         current = nil
+        window.removeChildWindow(linkPanel)
+        linkPanel.orderOut(nil)
+        linkPanel.contentView = nil
         if window.isVisible { window.orderOut(nil) }
         window.contentView = nil
+    }
+
+    /// Opens the project page and puts the bubble away. (The bubble goes on the next turn of the
+    /// run loop: this is called from the link row's own click handler.)
+    private func openRepository() {
+        if let url = URL(string: ProjectLinks.repository) { openURL(url) }
+        DispatchQueue.main.async { [weak self] in self?.hide() }
+    }
+
+    /// Puts the clickable link row over the foot of the bubble, as a child window so the two move
+    /// and hide together.
+    private func placeLinkRow(for view: HelpBubbleView) {
+        let link = view.makeLinkView()
+        link.onOpen = { [weak self] in self?.openRepository() }
+        linkPanel.contentView = link
+        let origin = window.frame.origin
+        linkPanel.setFrame(CGRect(x: origin.x + view.footerRect.minX, y: origin.y + view.footerRect.minY,
+                                  width: view.footerRect.width, height: view.footerRect.height), display: false)
+        if linkPanel.parent == nil { window.addChildWindow(linkPanel, ordered: .above) }
     }
 
     private func show(_ help: ButtonHelp, for owner: ButtonPanel) {
@@ -165,12 +301,18 @@ final class HelpBubble {
         current = help
         awaySince = nil
         startWatching()
-        guard !window.isVisible else { return }
-        window.alphaValue = 0
-        window.orderFrontRegardless()
+        let wasVisible = window.isVisible
+        if !wasVisible {
+            window.alphaValue = 0
+            window.orderFrontRegardless()
+        }
+        placeLinkRow(for: view)
+        guard !wasVisible else { return }
+        linkPanel.alphaValue = 0
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
             window.animator().alphaValue = 1
+            linkPanel.animator().alphaValue = 1
         }
     }
 
@@ -224,5 +366,10 @@ final class HelpBubble {
     var windowNumberForTesting: Int { window.windowNumber }
     var frameForTesting: CGRect { window.frame }
     var isShowingForTesting: Bool { window.isVisible }
+    var linkPanelFrameForTesting: CGRect { linkPanel.frame }
+    var linkPanelWindowNumberForTesting: Int { linkPanel.windowNumber }
+    var isLinkRowShowingForTesting: Bool { linkPanel.isVisible }
+    var bubbleIgnoresMouseEventsForTesting: Bool { window.ignoresMouseEvents }
+    var linkRowAcceptsMouseEventsForTesting: Bool { !linkPanel.ignoresMouseEvents }
     #endif
 }

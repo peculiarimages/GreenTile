@@ -133,8 +133,11 @@ final class OverlayController {
     // MARK: Polling
 
     private func handle(_ event: NSEvent) {
-        // A click anywhere means the user is acting, not reading: take the help away.
-        if event.type == .leftMouseDown || event.type == .rightMouseDown { help.hide() }
+        // A click anywhere means the user is acting, not reading: take the help away. A click on the
+        // bubble's own link row is the exception (it is reading, and following the link).
+        if (event.type == .leftMouseDown || event.type == .rightMouseDown), !help.ownsWindow(event.window) {
+            help.hide()
+        }
         boost()
     }
 

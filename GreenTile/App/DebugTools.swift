@@ -168,6 +168,22 @@ enum DebugTools {
             record("bubble is on screen", false)
         }
 
+        // 1b. The link row: the icon is 3 x the round buttons' height, two blank lines come before it,
+        //     and only the row takes clicks (the bubble itself still lets them through).
+        let sample = HelpBubbleView(help: ButtonHelp(for: .leftHalf, thirdsByDefault: false))
+        record("the icon is 3 x the height of the round buttons",
+               HelpLinkView.iconSide == 3 * OverlayPlacement.buttonDiameter && sample.footerRect.height == HelpLinkView.iconSide,
+               "\(HelpLinkView.iconSide) pt tall, buttons are \(OverlayPlacement.buttonDiameter) pt")
+        let gap = sample.lastTextFrame.minY - sample.footerRect.maxY
+        let line = sample.lastTextFrame.height
+        record("two blank lines separate the help text from the link row", abs(gap - 2 * line) <= 1.5,
+               "gap \(String(format: "%.1f", gap)) pt, one line is \(String(format: "%.1f", line)) pt")
+        record("the link row is up with the bubble", bubble.isLinkRowShowingForTesting)
+        record("the link row sits inside the bubble", bubble.frameForTesting.contains(bubble.linkPanelFrameForTesting),
+               "bubble \(fmt(bubble.frameForTesting)), row \(fmt(bubble.linkPanelFrameForTesting))")
+        record("the bubble itself ignores mouse events, only the link row takes them",
+               bubble.bubbleIgnoresMouseEventsForTesting && bubble.linkRowAcceptsMouseEventsForTesting)
+
         // 2. It stays while the pointer is on the button, however long.
         pump(2.6)
         record("stays while the pointer is on the button (2.6 s, longer than the delay)", up())
@@ -230,6 +246,36 @@ enum DebugTools {
         } else {
             record("right button exists", false)
         }
+        bubble.hide()
+
+        // 8b. Clicking the link row opens the project page and puts the bubble away. The events go
+        //     through the application, so the click-away monitor sees them: it must not hide the
+        //     bubble on the press (the release would then never arrive). The browser is not opened:
+        //     the address is recorded instead.
+        var opened: [URL] = []
+        bubble.openURL = { opened.append($0) }
+        enter(left)
+        pump(0.8)
+        record("bubble is up before clicking its link row", up() && bubble.isLinkRowShowingForTesting)
+        func linkEvent(_ type: NSEvent.EventType) -> NSEvent? {
+            NSEvent.mouseEvent(with: type, location: NSPoint(x: 10, y: 10), modifierFlags: [],
+                               timestamp: ProcessInfo.processInfo.systemUptime,
+                               windowNumber: bubble.linkPanelWindowNumberForTesting, context: nil,
+                               eventNumber: 0, clickCount: 1, pressure: 1)
+        }
+        if let press = linkEvent(.leftMouseDown), let release = linkEvent(.leftMouseUp) {
+            NSApp.sendEvent(press)
+            pump(0.1)
+            record("pressing on the link row does not dismiss the bubble", up() && bubble.isLinkRowShowingForTesting)
+            NSApp.sendEvent(release)
+            pump(0.3)
+            record("releasing on the link row opens the project page",
+                   opened == [URL(string: ProjectLinks.repository)!], "\(opened.map(\.absoluteString))")
+            record("the bubble is put away after the click", !up() && !bubble.isLinkRowShowingForTesting)
+        } else {
+            record("build the link row click events", false)
+        }
+        leave(left)
         bubble.hide()
 
         // 9. Pressing the button hides it at once.
@@ -762,6 +808,10 @@ enum DebugTools {
                 host.layer?.backgroundColor = style.background.cgColor
                 bubble.frame.origin = CGPoint(x: margin, y: margin)
                 host.addSubview(bubble)
+                // The link row is a panel of its own in the app; here it is simply laid over the bubble.
+                let link = bubble.makeLinkView()
+                link.frame = bubble.footerRect.offsetBy(dx: margin, dy: margin)
+                host.addSubview(link)
                 writePNG(of: host, scale: 4, to: directory.appendingPathComponent("help-\(layout.rawValue)-\(style.name).png"))
             }
         }

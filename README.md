@@ -1,5 +1,7 @@
 # GreenTile
 
+<img src="Artwork/AppIconPreview.png" align="right" width="128" alt="GreenTile app icon">
+
 This app is for anyone who wants quick access to buttons for moving and resizing macOS windows.
 
 It’s made mostly with Claude. I’m sharing it here so you can just download it instead of spending a couple of hours doing what I did. ;)
@@ -45,7 +47,8 @@ the outline is that green with 33% black added (`#448929`).
   choice is remembered.
 - **Hover** a button for a moment and a small bubble says what it does and how to switch. It stays
   while the pointer is on the button or on the bubble, and goes once the pointer has been away from
-  both for 2 seconds (or straight away when you click).
+  both for 2 seconds (or straight away when you click). Every bubble ends with the project's address
+  next to the app icon; click it to open the project page.
 - **Several displays:** when the display a window is on has another display to its left, a chevron
   `‹` appears to the left of the leftmost button, and when there is one to its right, a chevron `›`
   appears to the right of the rightmost button. Clicking one sends the window to that display,
