@@ -67,8 +67,12 @@ final class ChevronButton: NSView {
 
         // Centred in the click area and, vertically, level with the tiling buttons' circles.
         let centre = CGPoint(x: bounds.midX, y: bounds.midY + OverlayPlacement.circleNudgeY)
-        let reach: CGFloat = 2.6      // how far the tip sticks out horizontally
-        let halfHeight: CGFloat = 4.4
+        // The whole glyph, outline included, is as tall as a tiling button's circle. The proportions
+        // come from a design that was 12.4 pt tall (a 8.8 pt path plus a 3.6 pt outline stroke),
+        // scaled down to fit.
+        let scale = OverlayPlacement.buttonDiameter / 12.4
+        let reach = 2.6 * scale       // how far the tip sticks out horizontally
+        let halfHeight = 4.4 * scale
         let tipX = centre.x + (side == .left ? -reach : reach)
         let tailX = centre.x + (side == .left ? reach : -reach)
 
@@ -90,12 +94,12 @@ final class ChevronButton: NSView {
             shadow.set()
         }
         tone(ButtonPalette.outline).setStroke()
-        path.lineWidth = 3.6
+        path.lineWidth = 3.6 * scale
         path.stroke()
         NSGraphicsContext.restoreGraphicsState()
 
         tone(ButtonPalette.fill).setStroke()
-        path.lineWidth = 2.1
+        path.lineWidth = 2.1 * scale
         path.stroke()
     }
 }
