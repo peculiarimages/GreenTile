@@ -64,16 +64,30 @@ final class HelpBubbleView: NSVisualEffectView {
 /// Shows the help bubble just below a button once the pointer has rested on it for a moment, and
 /// takes it away again. (The standard tooltip machinery is unreliable for a background app's
 /// non-activating panels, so this draws its own.)
+///
+/// Once it is up it stays while the pointer is on the bubble or on its button, and goes when the
+/// pointer has been away from both for `awayDelay`. The bubble itself ignores mouse events so it
+/// never blocks a click on the window beneath, which means "the pointer is on it" is worked out by
+/// watching where the pointer is rather than from mouse events.
 final class HelpBubble {
+    /// Pause before the bubble first appears: the same as a standard tooltip.
+    static let delay: TimeInterval = 0.45
+    /// Pause when moving from one button to the next while a bubble is already up.
+    static let switchDelay: TimeInterval = 0.12
+    /// How long the pointer may stay away from both the bubble and its button before it hides.
+    static let awayDelay: TimeInterval = 3
+
     private let window: NSPanel
     private var pending: DispatchWorkItem?
+    private var watcher: Timer?
+    private var awaySince: CFTimeInterval?
     /// The button panel the bubble is for, from when it is scheduled until it is hidden.
     private weak var owner: OverlayPanel?
     /// The text on show, for the self-test.
     private(set) var current: ButtonHelp?
 
-    /// Matches the pause before a standard tooltip appears.
-    static let delay: TimeInterval = 0.45
+    /// Where the pointer is, in screen coordinates. Replaced only by the self-test.
+    var pointerLocation: () -> CGPoint = { NSEvent.mouseLocation }
 
     init() {
         window = NSPanel(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel],
@@ -88,9 +102,20 @@ final class HelpBubble {
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle, .transient]
     }
 
-    /// Shows `help` for `owner` after `delay`. A later call replaces an earlier one.
-    func schedule(for owner: OverlayPanel, help: ButtonHelp, delay: TimeInterval = HelpBubble.delay) {
-        hide()
+    // MARK: Pointer events from the button
+
+    /// The pointer arrived on `owner`'s button.
+    func hoverBegan(for owner: OverlayPanel, help: ButtonHelp) {
+        // Already up for this very button (the pointer left and came straight back): keep it as
+        // it is rather than hiding and re-showing it.
+        if self.owner === owner, window.isVisible {
+            awaySince = nil
+            refresh(for: owner, help: help)
+            return
+        }
+        // Moving between buttons while a bubble is up swaps it quickly.
+        let delay = window.isVisible ? Self.switchDelay : Self.delay
+        pending?.cancel()
         self.owner = owner
         let item = DispatchWorkItem { [weak self, weak owner] in
             guard let self, let owner, self.owner === owner else { return }
@@ -99,6 +124,20 @@ final class HelpBubble {
         pending = item
         DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: item)
     }
+
+    /// The pointer left `owner`'s button. A bubble that is up stays (the away timer decides when it
+    /// goes); one that is still waiting for its pause is cancelled.
+    func hoverEnded(for owner: OverlayPanel) {
+        guard self.owner === owner else { return }
+        if window.isVisible {
+            pending?.cancel()
+            pending = nil
+        } else {
+            hide()
+        }
+    }
+
+    // MARK: Showing and hiding
 
     /// Swaps the text if the bubble is up for `owner` (the button changed under the pointer).
     func refresh(for owner: OverlayPanel, help: ButtonHelp) {
@@ -111,6 +150,7 @@ final class HelpBubble {
         if let owner, self.owner !== owner { return }
         pending?.cancel()
         pending = nil
+        stopWatching()
         self.owner = nil
         current = nil
         if window.isVisible { window.orderOut(nil) }
@@ -123,12 +163,49 @@ final class HelpBubble {
         window.setContentSize(view.preferredSize)
         window.setFrameOrigin(origin(for: view.preferredSize, below: owner.frame))
         current = help
+        awaySince = nil
+        startWatching()
         guard !window.isVisible else { return }
         window.alphaValue = 0
         window.orderFrontRegardless()
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
             window.animator().alphaValue = 1
+        }
+    }
+
+    // MARK: Watching the pointer
+
+    private func startWatching() {
+        guard watcher == nil else { return }
+        let timer = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in self?.checkPointer() }
+        RunLoop.main.add(timer, forMode: .common)   // keeps ticking while menus or drags track
+        watcher = timer
+    }
+
+    private func stopWatching() {
+        watcher?.invalidate()
+        watcher = nil
+        awaySince = nil
+    }
+
+    /// Runs ten times a second while the bubble is up: starts the away clock when the pointer is
+    /// on neither the bubble nor its button, resets it when the pointer comes back, and hides the
+    /// bubble once the pointer has been away for `awayDelay`.
+    private func checkPointer() {
+        guard window.isVisible else { stopWatching(); return }
+        let pointer = pointerLocation()
+        let onBubble = window.frame.insetBy(dx: -2, dy: -2).contains(pointer)
+        let onButton = owner?.frame.contains(pointer) ?? false
+        if onBubble || onButton {
+            awaySince = nil
+            return
+        }
+        let now = CACurrentMediaTime()
+        if let since = awaySince {
+            if now - since >= Self.awayDelay { hide() }
+        } else {
+            awaySince = now
         }
     }
 
@@ -145,5 +222,7 @@ final class HelpBubble {
 
     #if DEBUG
     var windowNumberForTesting: Int { window.windowNumber }
+    var frameForTesting: CGRect { window.frame }
+    var isShowingForTesting: Bool { window.isVisible }
     #endif
 }

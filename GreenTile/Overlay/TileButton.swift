@@ -28,9 +28,11 @@ final class TileButton: NSView {
     /// Called on a right-click (or Control-click): switches between halves and thirds.
     var onSecondaryClick: (() -> Void)?
 
-    /// Called with true when the pointer enters the button and with false when it leaves or a press
-    /// begins. The help bubble follows this.
+    /// Called with true when the pointer enters the button and false when it leaves. The help
+    /// bubble follows this.
     var onHoverChange: ((Bool) -> Void)?
+    /// Called when a mouse button goes down on the button (the help bubble gets out of the way).
+    var onPress: (() -> Void)?
 
     private(set) var isHovering = false { didSet { needsDisplay = true } }
     private var isPressed = false { didSet { needsDisplay = true } }
@@ -67,12 +69,12 @@ final class TileButton: NSView {
 
     override func mouseDown(with event: NSEvent) {
         isPressed = true
-        onHoverChange?(false)
+        onPress?()
     }
 
     override func rightMouseDown(with event: NSEvent) {
         isPressed = true
-        onHoverChange?(false)
+        onPress?()
     }
 
     override func mouseUp(with event: NSEvent) {

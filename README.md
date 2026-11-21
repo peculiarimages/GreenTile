@@ -1,5 +1,25 @@
 # GreenTile
 
+This app is for anyone who wants quick access to buttons for moving and resizing macOS windows.
+
+It’s made entirely with Claude. I’m sharing it here so you can just download it instead of spending a couple of hours doing what I did. ;)
+
+## Download
+
+**[Download GreenTile.zip](https://github.com/peculiarimages/GreenTile/releases/latest/download/GreenTile.zip)**
+(see all versions on the [Releases page](https://github.com/peculiarimages/GreenTile/releases)).
+Unzip it, drag **GreenTile.app** to your Applications folder, and open it. It needs macOS 14 or later.
+
+The download is **not notarized by Apple**, so the first time you open it macOS will say it can't
+check the app for malicious software. To allow it, open **System Settings > Privacy & Security**,
+scroll to the Security section, and click **Open Anyway** next to the GreenTile message (or run
+`xattr -dr com.apple.quarantine /Applications/GreenTile.app` in Terminal). Then grant it
+**Accessibility** access when asked: see [Requirements](#requirements). A SHA-256 checksum is
+published next to each download (`GreenTile.zip.sha256`), and the full source is in this
+repository if you would rather build it yourself.
+
+## What it does
+
 A small macOS menu-bar utility that puts tiling buttons right under the traffic lights of every
 window, so you can snap a window to the left or right half of the screen with one click: no
 hovering, no menu, no keyboard shortcut to remember.
@@ -22,7 +42,9 @@ white for the rest.
   thirds as the default, holding Option shows the halves instead, so Option always turns the
   current row over. The menu-bar icon has the same switch ("Thirds Instead of Halves"), and the
   choice is remembered.
-- **Hover** a button for a moment and a small bubble says what it does and how to switch.
+- **Hover** a button for a moment and a small bubble says what it does and how to switch. It stays
+  while the pointer is on the button or on the bubble, and goes once the pointer has been away from
+  both for 3 seconds (or straight away when you click).
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
@@ -94,7 +116,7 @@ runs the unit tests for the layout and placement logic.
 - `project.yml` is the source of truth for the Xcode project. Edit it and regenerate with
   [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen generate`).
 
-Debug builds have developer switches. Each runs once and exits; start them with
+Debug builds (not the downloadable Release build) have developer switches. Each runs once and exits; start them with
 `open -n GreenTile.app --args <switch> <path>` so the app itself, not your terminal, holds the
 Accessibility permission:
 
@@ -105,7 +127,7 @@ Accessibility permission:
 | `--selftest-tile <file>` | tiles a throwaway window to every layout on every display and checks the result |
 | `--selftest-stacking <file>` | re-fronts a throwaway window repeatedly and checks its buttons come back in front |
 | `--selftest-modes <file>` | fakes the Option key and delivers right-/Control-click events; checks each button sits under its light, the halves/thirds switching, and every button's result |
-| `--selftest-help <file>` | hovers buttons with synthetic events; checks the help bubble's timing, text, placement and dismissal |
+| `--selftest-help <file>` | hovers buttons with synthetic events and a simulated pointer; checks the help bubble's timing, text, placement, the 3 s away delay and its dismissal |
 
 ## Known limits
 

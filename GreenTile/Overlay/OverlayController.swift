@@ -62,7 +62,7 @@ final class OverlayController {
 
     #if DEBUG
     var helpForTesting: ButtonHelp? { help.current }
-    var helpWindowNumberForTesting: Int { help.windowNumberForTesting }
+    var helpBubbleForTesting: HelpBubble { help }
     #endif
 
     private var tracked: [CGWindowID: TrackedWindow] = [:]
@@ -85,12 +85,12 @@ final class OverlayController {
         guard monitors.isEmpty else { return }
         // Clicks and drags are what change window positions and stacking; follow them closely. So
         // is pressing or releasing Option, which swaps the buttons.
-        let mask: NSEvent.EventTypeMask = [.leftMouseDown, .leftMouseDragged, .leftMouseUp, .flagsChanged]
-        if let global = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] _ in
-            self?.boost()
+        let mask: NSEvent.EventTypeMask = [.leftMouseDown, .leftMouseDragged, .leftMouseUp, .rightMouseDown, .flagsChanged]
+        if let global = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] event in
+            self?.handle(event)
         }) { monitors.append(global) }
         if let local = NSEvent.addLocalMonitorForEvents(matching: mask, handler: { [weak self] event in
-            self?.boost()
+            self?.handle(event)
             return event
         }) { monitors.append(local) }
 
@@ -114,6 +114,12 @@ final class OverlayController {
     }
 
     // MARK: Polling
+
+    private func handle(_ event: NSEvent) {
+        // A click anywhere means the user is acting, not reading: take the help away.
+        if event.type == .leftMouseDown || event.type == .rightMouseDown { help.hide() }
+        boost()
+    }
 
     /// Switches to the fast poll rate for a second.
     private func boost() {
@@ -241,10 +247,14 @@ final class OverlayController {
         panel.tileButton.onHoverChange = { [weak self, weak panel] hovering in
             guard let self, let panel else { return }
             if hovering {
-                self.help.schedule(for: panel, help: ButtonHelp(for: panel.layout, thirdsByDefault: self.thirdsByDefault))
+                self.help.hoverBegan(for: panel, help: ButtonHelp(for: panel.layout, thirdsByDefault: self.thirdsByDefault))
             } else {
-                self.help.hide(ifOwnedBy: panel)
+                self.help.hoverEnded(for: panel)
             }
+        }
+        panel.tileButton.onPress = { [weak self, weak panel] in
+            guard let self, let panel else { return }
+            self.help.hide(ifOwnedBy: panel)
         }
         panels[key] = panel
         return panel

@@ -13,8 +13,8 @@ import GreenTileKit
 ///   where each button would go.
 /// * `--selftest-tile <file>`: tiles a throwaway window to every layout on every display.
 /// * `--selftest-stacking <file>`: re-fronts a throwaway window and checks its buttons stay in front.
-/// * `--selftest-help <file>`: hovers buttons with synthetic events; checks the help bubble's timing,
-///   text, placement and dismissal.
+/// * `--selftest-help <file>`: hovers buttons with synthetic events and a simulated pointer; checks the
+///   help bubble's timing, text, placement, the 3 s away delay, and its dismissal.
 /// * `--selftest-modes <file>`: fakes the Option key; checks the halves/thirds swap, that each button
 ///   sits under its traffic light, and what every button does.
 enum DebugTools {
@@ -81,6 +81,10 @@ enum DebugTools {
 
     // MARK: Help bubble self-test
 
+    /// Hovers buttons with synthetic events and a simulated pointer, and checks the help bubble: its
+    /// pause before showing, its text and placement, that it stays while the pointer is on the
+    /// bubble or on the button, that it goes 3 seconds after the pointer is away from both (and
+    /// that coming back restarts that clock), and the ways it is dismissed at once.
     private static func selfTestHelp(report file: URL) {
         var report = "AX trusted: \(AXIsProcessTrusted())\n"
         var failures = 0
@@ -94,6 +98,12 @@ enum DebugTools {
         controller.includesOwnWindows = true
         controller.modifierFlags = { held }
         controller.start()
+        let bubble = controller.helpBubbleForTesting
+        // The self-test plays the pointer: it is far away unless a step puts it somewhere.
+        let faraway = CGPoint(x: -20000, y: -20000)
+        var pointer = faraway
+        bubble.pointerLocation = { pointer }
+
         let window = makeTestWindow(title: "GreenTile help test")
         pump(2.0)
 
@@ -103,10 +113,19 @@ enum DebugTools {
             window.close()
             try? report.write(to: file, atomically: true, encoding: .utf8)
         }
-        func button(_ column: Int) -> (panel: OverlayPanel, button: TileButton)? {
+        typealias Target = (panel: OverlayPanel, button: TileButton)
+        func button(_ column: Int) -> Target? {
             controller.panelForTesting(windowNumber: window.windowNumber, column: column).map { ($0, $0.tileButton) }
         }
-        func hover(_ type: NSEvent.EventType, _ target: (panel: OverlayPanel, button: TileButton)) {
+        func centre(of r: CGRect) -> CGPoint { CGPoint(x: r.midX, y: r.midY) }
+        func enter(_ target: Target) {
+            pointer = centre(of: target.panel.frame)
+            hover(.mouseEntered, target)
+        }
+        func leave(_ target: Target) {
+            hover(.mouseExited, target)
+        }
+        func hover(_ type: NSEvent.EventType, _ target: Target) {
             let event = NSEvent.enterExitEvent(with: type, location: NSPoint(x: 8, y: 8), modifierFlags: [],
                                                timestamp: ProcessInfo.processInfo.systemUptime,
                                                windowNumber: target.panel.windowNumber, context: nil,
@@ -115,101 +134,170 @@ enum DebugTools {
                 type == .mouseEntered ? target.button.mouseEntered(with: event) : target.button.mouseExited(with: event)
             }
         }
-        func bubbleFrame() -> CGRect? {
-            WindowCatalog.onScreen().first { Int($0.id) == controller.helpWindowNumberForTesting }?.bounds
-        }
+        func up() -> Bool { bubble.isShowingForTesting }
         func shows(_ layout: TileLayout, thirdsByDefault: Bool = false) -> Bool {
-            controller.helpForTesting == ButtonHelp(for: layout, thirdsByDefault: thirdsByDefault) && bubbleFrame() != nil
+            up() && controller.helpForTesting == ButtonHelp(for: layout, thirdsByDefault: thirdsByDefault)
+        }
+        func text() -> String {
+            controller.helpForTesting.map { "\($0.title) | \($0.detail) | \($0.hint)" } ?? "nothing"
         }
 
         guard let left = button(0) else {
             record("find the buttons", false)
             finish(); return
         }
-        record("no bubble before hovering", bubbleFrame() == nil && controller.helpForTesting == nil)
+        record("no bubble before hovering", !up())
+        record("the away delay is 3 s", HelpBubble.awayDelay == 3)
 
-        // Timing: nothing straight away, the bubble after the pause.
-        hover(.mouseEntered, left)
+        // 1. The pause, the text and the placement.
+        enter(left)
         pump(0.2)
-        record("no bubble before the pause is up", bubbleFrame() == nil)
+        record("no bubble before the pause is up", !up())
         pump(0.6)
-        record("bubble shows the left-half help after the pause", shows(.leftHalf),
-               "\(controller.helpForTesting.map { "\($0.title) | \($0.detail) | \($0.hint)" } ?? "nothing")")
-
-        // Placement: just below the button, left edges lined up (both in Accessibility coordinates).
-        if let bubble = bubbleFrame(), let buttonFrame = panelFramesAbove(window).first {
-            let gap = bubble.minY - buttonFrame.maxY
-            record("bubble sits just below the button", gap >= 0 && gap <= 6, "gap \(gap) pt, bubble \(fmt(bubble)), button \(fmt(buttonFrame))")
-            record("bubble is left-aligned with the button", abs(bubble.minX - buttonFrame.minX) <= 1)
+        record("bubble shows the left-half help after the pause", shows(.leftHalf), text())
+        let bubbleAX = WindowCatalog.onScreen().first { Int($0.id) == bubble.windowNumberForTesting }?.bounds
+        if let bubbleAX, let buttonFrame = panelFramesAbove(window).first {
+            let gap = bubbleAX.minY - buttonFrame.maxY
+            record("bubble sits just below the button", gap >= 0 && gap <= 6, "gap \(gap) pt, bubble \(fmt(bubbleAX)), button \(fmt(buttonFrame))")
+            record("bubble is left-aligned with the button", abs(bubbleAX.minX - buttonFrame.minX) <= 1)
+        } else {
+            record("bubble is on screen", false)
         }
 
-        hover(.mouseExited, left)
-        pump(0.3)
-        record("bubble goes when the pointer leaves", bubbleFrame() == nil)
+        // 2. It stays while the pointer is on the button, however long.
+        pump(3.5)
+        record("stays while the pointer is on the button (3.5 s)", up())
 
-        // Leaving before the pause is up cancels it.
-        hover(.mouseEntered, left)
-        pump(0.15)
-        hover(.mouseExited, left)
-        pump(0.8)
-        record("leaving early cancels the bubble", bubbleFrame() == nil)
+        // 3. It stays while the pointer is on the bubble, even though it has left the button.
+        pointer = centre(of: bubble.frameForTesting)
+        leave(left)
+        pump(3.5)
+        record("stays while the pointer is on the bubble (3.5 s)", up())
 
-        // Pressing the button dismisses it.
-        hover(.mouseEntered, left)
+        // 4. It goes about 3 s after the pointer is away from both.
+        pointer = faraway
+        pump(2.0)
+        record("still up 2 s after the pointer went away", up())
+        pump(1.6)
+        record("gone 3.6 s after the pointer went away", !up())
+
+        // 5. Coming back restarts the clock.
+        enter(left)
         pump(0.7)
         record("bubble is up again", shows(.leftHalf))
+        leave(left)
+        pointer = faraway
+        pump(2.0)
+        pointer = centre(of: bubble.frameForTesting)   // back on the bubble: the clock restarts
+        pump(0.5)
+        pointer = faraway
+        pump(2.0)
+        record("2 s after the second departure it is still up (the clock restarted)", up())
+        pump(1.6)
+        record("and gone 3.6 s after the second departure", !up())
+
+        // 6. Going off the button and straight back on keeps the same bubble: no hide and re-show.
+        enter(left)
+        pump(0.7)
+        leave(left)
+        pointer = faraway
+        pump(0.3)
+        enter(left)
+        record("re-entering the button keeps the bubble up with no flicker", shows(.leftHalf))
+        bubble.hide()
+
+        // 7. Leaving before the pause is up cancels it.
+        enter(left)
+        pump(0.15)
+        pointer = faraway
+        leave(left)
+        pump(0.8)
+        record("leaving before the pause is up cancels the bubble", !up())
+
+        // 8. Moving to the neighbouring button swaps the bubble quickly.
+        enter(left)
+        pump(0.7)
+        leave(left)
+        if let right = button(2) {
+            enter(right)
+            pump(0.4)
+            record("moving to the right button swaps the bubble within 0.4 s", shows(.rightHalf), text())
+            leave(right)
+        } else {
+            record("right button exists", false)
+        }
+        bubble.hide()
+
+        // 9. Pressing the button hides it at once.
+        enter(left)
+        pump(0.7)
         if let down = NSEvent.mouseEvent(with: .leftMouseDown, location: NSPoint(x: 8, y: 8), modifierFlags: [],
                                          timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: left.panel.windowNumber,
                                          context: nil, eventNumber: 0, clickCount: 1, pressure: 1),
-           let up = NSEvent.mouseEvent(with: .leftMouseUp, location: NSPoint(x: 200, y: 200), modifierFlags: [],
-                                       timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: left.panel.windowNumber,
-                                       context: nil, eventNumber: 0, clickCount: 1, pressure: 1) {
+           let release = NSEvent.mouseEvent(with: .leftMouseUp, location: NSPoint(x: 200, y: 200), modifierFlags: [],
+                                            timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: left.panel.windowNumber,
+                                            context: nil, eventNumber: 0, clickCount: 1, pressure: 1) {
+            record("bubble is up before the press", up())
             left.button.mouseDown(with: down)
-            pump(0.2)
-            record("pressing the button hides the bubble", bubbleFrame() == nil)
-            left.button.mouseUp(with: up)   // released outside the button: no click, just resets the look
+            record("pressing the button hides the bubble at once", !up())
+            left.button.mouseUp(with: release)   // released outside the button: no click, just resets the look
         }
-        hover(.mouseExited, left)
+        leave(left)
 
-        // With Option held the left button is the left THIRD, and its help says how to go back.
+        // 10. A click anywhere hides it at once. (Sent through the application so the click monitor sees it.)
+        enter(left)
+        pump(0.7)
+        record("bubble is up before the click", up())
+        if let down = NSEvent.mouseEvent(with: .leftMouseDown, location: NSPoint(x: 100, y: 100), modifierFlags: [],
+                                         timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber,
+                                         context: nil, eventNumber: 0, clickCount: 1, pressure: 1),
+           let release = NSEvent.mouseEvent(with: .leftMouseUp, location: NSPoint(x: 100, y: 100), modifierFlags: [],
+                                            timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber,
+                                            context: nil, eventNumber: 0, clickCount: 1, pressure: 1) {
+            NSApp.sendEvent(down)
+            pump(0.1)
+            record("a click anywhere hides the bubble", !up())
+            NSApp.sendEvent(release)
+        }
+        leave(left)
+        bubble.hide()
+
+        // 11. Option under a hovering pointer: with Option held the left button is the left THIRD.
         held = [.option]
         pump(0.4)
-        hover(.mouseEntered, left)
+        enter(left)
         pump(0.7)
-        record("Option held: bubble shows the left-third help", shows(.leftThird),
-               "\(controller.helpForTesting.map { "\($0.detail) | \($0.hint)" } ?? "nothing")")
-
-        // Releasing Option under the hovering pointer updates the bubble in place.
+        record("Option held: bubble shows the left-third help", shows(.leftThird), text())
         held = []
         pump(0.5)
-        record("releasing Option updates the bubble to the left-half help", shows(.leftHalf),
-               "\(controller.helpForTesting.map { "\($0.detail) | \($0.hint)" } ?? "nothing")")
-        hover(.mouseExited, left)
-        pump(0.2)
+        record("releasing Option updates the bubble to the left-half help", shows(.leftHalf), text())
+        leave(left)
+        bubble.hide()
 
-        // A bubble for a button that disappears goes with it: hover the middle button, then drop it.
+        // 12. A bubble for a button that disappears goes with it.
         held = [.option]
         pump(0.4)
         if let middle = button(1) {
-            hover(.mouseEntered, middle)
+            enter(middle)
             pump(0.7)
-            record("middle button shows the center-third help", shows(.centerThird))
+            record("middle button shows the center-third help", shows(.centerThird), text())
             held = []
             pump(0.5)
-            record("bubble goes when its button is removed", bubbleFrame() == nil)
+            record("bubble goes when its button is removed", !up())
         } else {
             record("middle button exists while Option is held", false)
         }
+        pointer = faraway
 
-        // Thirds as the default changes the hint wording.
+        // 13. Thirds as the default changes the hint wording.
         controller.thirdsByDefault = true
         pump(0.4)
         if let thirdsLeft = button(0) {
-            hover(.mouseEntered, thirdsLeft)
+            enter(thirdsLeft)
             pump(0.7)
-            record("thirds default: bubble says how to get halves", shows(.leftThird, thirdsByDefault: true),
-                   "\(controller.helpForTesting?.hint ?? "nothing")")
-            hover(.mouseExited, thirdsLeft)
+            record("thirds default: bubble says how to get halves", shows(.leftThird, thirdsByDefault: true), text())
+            leave(thirdsLeft)
+            bubble.hide()
         }
         controller.thirdsByDefault = false
 
