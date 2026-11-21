@@ -9,5 +9,11 @@ CODE_SIGN_STYLE = Manual
 CODE_SIGN_IDENTITY = -
 DEVELOPMENT_TEAM =
 
+// The hardened runtime is off by default. It only pays off for a notarized app, and it makes macOS
+// refuse to load an ad-hoc-signed app's own embedded framework at launch ("library validation":
+// ad-hoc signatures have no team ID to match). With a real signing identity the app and its
+// framework share a team ID, so Local.xcconfig can turn it on again.
+ENABLE_HARDENED_RUNTIME = NO
+
 // Your own, untracked overrides. The leading "?" makes the file optional.
 #include? "Local.xcconfig"

@@ -7,3 +7,6 @@
 
 CODE_SIGN_IDENTITY = Apple Development
 DEVELOPMENT_TEAM = YOURTEAMID
+
+// Optional: with a real signing identity the hardened runtime works, so you can switch it on.
+ENABLE_HARDENED_RUNTIME = YES

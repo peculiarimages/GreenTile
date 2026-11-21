@@ -16,7 +16,6 @@ settings:
   base:
     SWIFT_VERSION: "5.0"
     MACOSX_DEPLOYMENT_TARGET: "14.0"
-    ENABLE_HARDENED_RUNTIME: YES
 
 targets:
   # Pure geometry and layout logic. No AppKit/AX, so it is fully unit-testable.

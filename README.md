@@ -2,7 +2,7 @@
 
 This app is for anyone who wants quick access to buttons for moving and resizing macOS windows.
 
-It’s made entirely with Claude. I’m sharing it here so you can just download it instead of spending a couple of hours doing what I did. ;)
+It’s made mostly with Claude. I’m sharing it here so you can just download it instead of spending a couple of hours doing what I did. ;)
 
 ## Download
 
@@ -78,7 +78,8 @@ account. macOS ties the Accessibility permission to an app's code signature, and
 signature changes with every build, so you may have to grant the permission again after each
 rebuild. For a stable signature, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig`
 (git ignores it) and put in your own signing identity and team ID. The permission then survives
-rebuilds.
+rebuilds. (The ad-hoc build also has the hardened runtime switched off: with it on, macOS refuses
+to load an ad-hoc-signed app's own embedded framework.)
 
 ### Tests
 
