@@ -118,6 +118,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(login)
 
         menu.addItem(.separator())
+        let about = NSMenuItem(title: "About GreenTile", action: #selector(showAbout), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
         menu.addItem(NSMenuItem(title: "Quit GreenTile", action: #selector(NSApplication.terminate(_:)),
                                 keyEquivalent: "q"))
     }
@@ -198,6 +201,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func toggleKeepTiles() {
         overlay.keepsTilesInStageManager.toggle()
         UserDefaults.standard.set(overlay.keepsTilesInStageManager, forKey: Key.keepTilesInStageManager)
+    }
+
+    /// The standard About panel (icon, name, version and copyright come from Info.plist), with a
+    /// link to the project page as its credits. A menu-bar app is not active, so it is activated
+    /// first or the panel would open behind other windows.
+    @objc private func showAbout() {
+        let link = ProjectLinks.repository
+        let credits = NSMutableAttributedString(string: link, attributes: [
+            .link: URL(string: link) as Any,
+            .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+        ])
+        let centered = NSMutableParagraphStyle()
+        centered.alignment = .center
+        credits.addAttribute(.paragraphStyle, value: centered, range: NSRange(location: 0, length: credits.length))
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
     }
 
     @objc private func openAccessibilitySettings() {
