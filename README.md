@@ -72,7 +72,8 @@ the outline is that green with 33% black added (`#448929`).
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
-or above the main one.
+or above the main one. Only the active window's buttons are in full colour: windows in the
+background get buttons with a third of their colour taken out, so they stand out less.
 
 ## Requirements
 

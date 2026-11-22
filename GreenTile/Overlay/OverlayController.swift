@@ -172,6 +172,11 @@ final class OverlayController {
         // state is read directly, so no extra permission is involved.
         let mode = TileMode.effective(thirdsByDefault: thirdsByDefault, optionHeld: modifierFlags().contains(.option))
 
+        // The active window: the frontmost ordinary window of the app in front. Every other window's
+        // buttons are drawn muted, as the system dims an inactive window's controls.
+        let frontPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
+        let activeWindow = windows.first { $0.layer == 0 && $0.pid == frontPID }?.id
+
         var liveSlots = Set<SlotKey>()
         var candidates: [WindowCatalog.Info] = []
         var hasUnexamined = false
@@ -225,6 +230,9 @@ final class OverlayController {
                     group.append(panel)
                 }
             }
+
+            let muted = window.id != activeWindow
+            for panel in group where panel.isMuted != muted { panel.isMuted = muted }
 
             // This window's panels belong in a block directly in front of it. Check the real
             // front-to-back list every time: whenever the window is brought forward (activation, a

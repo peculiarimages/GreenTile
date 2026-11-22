@@ -24,6 +24,15 @@ class ButtonPanel: NSPanel {
         contentView = content
     }
 
+    /// Whether the button is drawn muted, for a window that is not the active one.
+    var isMuted: Bool {
+        get { (contentView as? TileButton)?.isMuted ?? (contentView as? ChevronButton)?.isMuted ?? false }
+        set {
+            (contentView as? TileButton)?.isMuted = newValue
+            (contentView as? ChevronButton)?.isMuted = newValue
+        }
+    }
+
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
 }

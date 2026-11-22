@@ -771,7 +771,8 @@ enum DebugTools {
         ]
         let side = OverlayPlacement.hitSize
         let layouts: [TileLayout] = [.leftHalf, .rightHalf, .leftThird, .centerThird]
-        let states: [(hover: Bool, press: Bool)] = [(false, false), (true, false), (false, true)]
+        // The last row is a background window's buttons (muted).
+        let states: [(hover: Bool, press: Bool, muted: Bool)] = [(false, false, false), (true, false, false), (false, true, false), (false, false, true)]
         for style in styles {
             let sheet = NSView(frame: CGRect(x: 0, y: 0, width: CGFloat(layouts.count) * (side + 6) + 6,
                                              height: CGFloat(states.count) * (side + 6) + 6))
@@ -782,6 +783,7 @@ enum DebugTools {
                 for (column, layout) in layouts.enumerated() {
                     let button = TileButton(layout: layout)
                     button.setPreviewState(hovering: state.hover, pressed: state.press)
+                    button.isMuted = state.muted
                     button.frame = CGRect(x: 6 + CGFloat(column) * (side + 6), y: 6 + CGFloat(row) * (side + 6),
                                           width: side, height: side)
                     sheet.addSubview(button)

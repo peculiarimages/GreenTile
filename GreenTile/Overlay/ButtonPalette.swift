@@ -5,6 +5,14 @@ extension NSColor {
     convenience init(_ color: SRGBColor) {
         self.init(srgbRed: color.red, green: color.green, blue: color.blue, alpha: 1)
     }
+
+    /// This colour with the background-window mute applied (see `ButtonColors.backgroundMute`).
+    func mutedForBackground() -> NSColor {
+        guard let c = usingColorSpace(.sRGB) else { return self }
+        let muted = SRGBColor(red: c.redComponent, green: c.greenComponent, blue: c.blueComponent)
+            .desaturated(ButtonColors.backgroundMute)
+        return NSColor(srgbRed: muted.red, green: muted.green, blue: muted.blue, alpha: c.alphaComponent)
+    }
 }
 
 /// The colours the buttons and chevrons are drawn with. The green fill and its outline come from

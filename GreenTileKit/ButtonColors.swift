@@ -29,6 +29,15 @@ public struct SRGBColor: Equatable, Sendable {
         return SRGBColor(red: clamp(red + delta), green: clamp(green + delta), blue: clamp(blue + delta))
     }
 
+    /// This colour with `fraction` of its colour taken out: it moves that far toward the grey of
+    /// the same brightness (Rec. 709 luminance). 0.33 keeps 67% of the colour; 1 is fully grey.
+    public func desaturated(_ fraction: Double) -> SRGBColor {
+        let f = min(max(fraction, 0), 1)
+        let grey = 0.2126 * red + 0.7152 * green + 0.0722 * blue
+        func mix(_ v: Double) -> Double { v + (grey - v) * f }
+        return SRGBColor(red: mix(red), green: mix(green), blue: mix(blue))
+    }
+
     /// The channels as 8-bit values, e.g. "#66CC3D".
     public var hexString: String {
         func byte(_ v: Double) -> Int { Int((v * 255).rounded()) }
@@ -44,4 +53,7 @@ public enum ButtonColors {
     public static let outlineBlack: Double = 0.33
     /// The outline: the fill with 33% black added.
     public static var outline: SRGBColor { fill.mixedWithBlack(outlineBlack) }
+    /// How much colour the buttons of a window in the background lose, so the active window's
+    /// buttons stand out.
+    public static let backgroundMute: Double = 0.33
 }
