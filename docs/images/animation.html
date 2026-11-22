@@ -1,0 +1,152 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+  :root { --g:#66CC3D; --gd:#448929; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#ffffff; font:15px -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; color:#1d1d1f; }
+  .fig { display:none; padding:28px 32px 24px; width:1320px; }
+  .fig.on { display:block; }
+  .row { display:flex; align-items:flex-start; gap:24px; }
+  .arrow { margin-top:150px; }
+  .row.tight { gap:0; }
+  .col { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .cap { font-size:17px; color:#3a3a3c; text-align:center; max-width:600px; line-height:1.35; }
+  .cap b { color:#1d1d1f; }
+  /* Captions are written next to the images (README, blog), so they are hidden in the render. */
+  .cap { display:none; }
+  .fig { padding:20px 32px 22px; }
+  .title { font-size:22px; font-weight:700; margin:0 0 18px; }
+  .bezel { background:#1c1c1e; border-radius:14px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,.18); }
+  .screen { position:relative; width:560px; height:350px; border-radius:4px; overflow:hidden;
+            background:linear-gradient(160deg,#8ec5e8 0%,#b9d9c3 45%,#e8d9b5 100%); }
+  .screen.b { background:linear-gradient(160deg,#c9b6e4 0%,#a8c8e8 55%,#bfe3d0 100%); }
+  .menubar { position:absolute; left:0; right:0; top:0; height:16px; background:rgba(255,255,255,.72);
+             font-size:10px; line-height:16px; padding-left:10px; color:#222; }
+  .menubar span { margin-right:12px; }
+  .menubar .tile { position:absolute; right:10px; top:3px; width:14px; height:10px; border:1.5px solid #333; border-radius:2px; }
+  .menubar .tile:after { content:""; position:absolute; left:5px; top:0; bottom:0; border-left:1.5px solid #333; }
+  .dock { position:absolute; bottom:4px; left:50%; transform:translateX(-50%); height:26px; width:210px;
+          background:rgba(255,255,255,.45); border-radius:8px; }
+  .win { position:absolute; background:#fff; border-radius:9px; box-shadow:0 4px 14px rgba(0,0,0,.25);
+         overflow:hidden; border:1px solid rgba(0,0,0,.12); }
+  .win .bar { height:24px; background:#f2f2f4; border-bottom:1px solid #e1e1e4; }
+  .win .side { position:absolute; left:0; top:24px; bottom:0; width:30%; background:#ededf0; }
+  .win .line { position:absolute; height:6px; border-radius:3px; background:#d9d9de; }
+  .win .name { position:absolute; top:5px; left:0; right:0; text-align:center; font-size:10.5px; font-weight:600; color:#555; }
+  .ghost { position:absolute; border:2px dashed rgba(29,29,31,.45); border-radius:9px; background:rgba(255,255,255,.18); }
+  .arrow { font-size:46px; color:#8e8e93; }
+  .zoom { position:absolute; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,.3); overflow:hidden; background:#f2f2f4; }
+  .key { display:inline-block; border:1.5px solid #8e8e93; border-bottom-width:3px; border-radius:6px; padding:2px 9px; font-size:14px; background:#fafafa; }
+  svg { position:absolute; overflow:visible; }
+  .stage{position:relative;width:1240px;height:390px;margin:0 auto}
+  .stage .bezel{position:absolute;top:0}
+  .capt{height:58px;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:600;gap:12px;padding-top:6px}
+  .capt .key{font-size:20px}
+  body{width:1320px;padding:0 40px}
+</style></head>
+</head><body>
+<div class="capt" id="capt"></div>
+<div class="stage" id="stage">
+  <div class="bezel" style="left:20px"><div class="screen" id="sa"></div></div>
+  <div class="bezel" style="left:620px"><div class="screen b" id="sb"></div></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+const G="#66CC3D", GD="#448929";
+// Traffic lights + GreenTile buttons, drawn as one SVG at (x,y) of a window, scaled by k.
+function lights(win, mode, k=1, opts={}) {
+  const s=document.createElementNS(NS,"svg");
+  s.setAttribute("width",200*k); s.setAttribute("height",60*k);
+  s.style.left="0px"; s.style.top="0px";
+  const g=document.createElementNS(NS,"g"); g.setAttribute("transform",`scale(${k})`); s.appendChild(g);
+  const cx=[17,34,51], cy=12, r=5.6, br=4.3, by=cy+13;
+  ["#FF5F57","#FEBC2E","#28C840"].forEach((c,i)=>{ const e=document.createElementNS(NS,"circle");
+    e.setAttribute("cx",cx[i]); e.setAttribute("cy",cy); e.setAttribute("r",r); e.setAttribute("fill",c);
+    e.setAttribute("stroke","rgba(0,0,0,.12)"); e.setAttribute("stroke-width",".5"); g.appendChild(e); });
+  const spans = mode==="halves" ? [[0,0,.5],[2,.5,1]] : mode==="thirds" ? [[0,0,1/3],[1,1/3,2/3],[2,2/3,1]] : [];
+  spans.forEach(([i,a,b],n)=>{
+    const id="c"+Math.random().toString(36).slice(2);
+    const cp=document.createElementNS(NS,"clipPath"); cp.id=id;
+    const cc=document.createElementNS(NS,"circle"); cc.setAttribute("cx",cx[i]); cc.setAttribute("cy",by); cc.setAttribute("r",br); cp.appendChild(cc); g.appendChild(cp);
+    const bg=document.createElementNS(NS,"circle"); bg.setAttribute("cx",cx[i]); bg.setAttribute("cy",by); bg.setAttribute("r",br); bg.setAttribute("fill","#fafafa"); g.appendChild(bg);
+    const rc=document.createElementNS(NS,"rect"); rc.setAttribute("x",cx[i]-br+a*2*br); rc.setAttribute("y",by-br);
+    rc.setAttribute("width",(b-a)*2*br); rc.setAttribute("height",2*br); rc.setAttribute("fill",G); rc.setAttribute("clip-path",`url(#${id})`); g.appendChild(rc);
+    const ol=document.createElementNS(NS,"circle"); ol.setAttribute("cx",cx[i]); ol.setAttribute("cy",by); ol.setAttribute("r",br);
+    ol.setAttribute("fill","none"); ol.setAttribute("stroke",GD); ol.setAttribute("stroke-width","1.2"); g.appendChild(ol);
+    if (opts.hl===n) { const h=document.createElementNS(NS,"circle"); h.setAttribute("cx",cx[i]); h.setAttribute("cy",by); h.setAttribute("r",br+2.6);
+      h.setAttribute("fill","none"); h.setAttribute("stroke","#ff9f0a"); h.setAttribute("stroke-width","1.4"); g.appendChild(h); }
+  });
+  const chev=(x,dir,hl)=>{ const p=document.createElementNS(NS,"path");
+    const d=dir>0?`M${x-1.6},${by-3.6} L${x+1.8},${by} L${x-1.6},${by+3.6}`:`M${x+1.6},${by-3.6} L${x-1.8},${by} L${x+1.6},${by+3.6}`;
+    [[GD,3.2],[G,1.8]].forEach(([c,w])=>{ const q=document.createElementNS(NS,"path"); q.setAttribute("d",d); q.setAttribute("fill","none");
+      q.setAttribute("stroke",c); q.setAttribute("stroke-width",w); q.setAttribute("stroke-linecap","round"); q.setAttribute("stroke-linejoin","round"); g.appendChild(q); });
+    if (hl) { const h=document.createElementNS(NS,"circle"); h.setAttribute("cx",x); h.setAttribute("cy",by); h.setAttribute("r",6.4);
+      h.setAttribute("fill","none"); h.setAttribute("stroke","#ff9f0a"); h.setAttribute("stroke-width","1.4"); g.appendChild(h); } };
+  if (opts.left) chev(cx[0]-12,-1,opts.left==="hl");
+  if (opts.right) chev(cx[2]+12,1,opts.right==="hl");
+  win.appendChild(s);
+}
+function cursor(parent,x,y){ const s=document.createElementNS(NS,"svg"); s.setAttribute("width",16); s.setAttribute("height",22);
+  s.style.left=x+"px"; s.style.top=y+"px";
+  s.innerHTML='<path d="M1,1 L1,17 L5,13 L8,20 L11,19 L8,12 L14,12 Z" fill="#000" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>';
+  parent.appendChild(s); }
+function screen(id){ const el=document.getElementById(id);
+  el.innerHTML='<div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Window</span><div class="tile"></div></div><div class="dock"></div>';
+  return el; }
+// Usable area: below the menu bar (16) and above the dock (34).
+const TOP=16, BOT=350-34, W=560;
+function win(scr,x,y,w,h,name,mode,opts={}){ const d=document.createElement("div"); d.className="win";
+  Object.assign(d.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"});
+  d.innerHTML=`<div class="bar"><div class="name">${name}</div></div><div class="side"></div>`;
+  for(let i=0;i<5;i++){ const l=document.createElement("div"); l.className="line";
+    Object.assign(l.style,{left:(w*0.36)+"px",top:(44+i*18)+"px",width:(w*(0.5-0.07*(i%3)))+"px"}); d.appendChild(l); }
+  lights(d,mode,1,opts); scr.appendChild(d); return d; }
+function ghost(scr,x,y,w,h){ const g=document.createElement("div"); g.className="ghost";
+  Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); scr.appendChild(g); }
+function zoom(scr,x,y,size,mode,opts,fx=30,fy=19,k=3.2){ const z=document.createElement("div"); z.className="zoom";
+  Object.assign(z.style,{left:x+"px",top:y+"px",width:size+"px",height:size+"px"});
+  const inner=document.createElement("div"); inner.style.position="absolute"; inner.style.left=(size/2-fx*k)+"px"; inner.style.top=(size/2-fy*k)+"px";
+  z.appendChild(inner); lights(inner,mode,k,opts); scr.appendChild(z); return z; }
+
+// Screen origins inside the stage (bezel left + 10 padding).
+const OX={a:30,b:630}, OY=10;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const lerp=(a,b,u)=>a+(b-a)*u;
+const third=W/3, H=BOT-TOP;
+const S={float:{d:"a",x:150,y:70,w:300,h:190}, left:{d:"a",x:0,y:TOP,w:W/2,h:H}, right:{d:"a",x:W/2,y:TOP,w:W/2,h:H},
+         mid:{d:"a",x:third,y:TOP,w:third,h:H}, midB:{d:"b",x:third,y:TOP,w:third,h:H}};
+// Global position of a window's button. n: 0 red, 1 yellow, 2 green; "L"/"R" chevrons.
+const bx={0:17,1:34,2:51,L:5,R:63};
+const btn=(s,n)=>({x:OX[s.d]+s.x+bx[n], y:OY+s.y+25});
+// Steps: [start, end, from-window, button, then-window, mode, caption]
+const steps=[
+  {t:0.8, win:S.float, b:0, to:S.left, mode:"halves", cap:'Click the button under the red light: <b>left half</b>'},
+  {t:3.4, win:S.left, b:2, to:S.right, mode:"halves", cap:'Under the green light: <b>right half</b>'},
+  {t:6.0, win:S.right, b:1, to:S.mid, mode:"thirds", cap:'Hold <span class="key">⌥ option</span> for <b>thirds</b>'},
+  {t:8.6, win:S.mid, b:"R", to:S.midB, mode:"halves", cap:'Another display? <b>›</b> moves the window there'},
+  {t:11.2, win:S.midB, b:"L", to:S.mid, mode:"halves", cap:'and <b>‹</b> brings it back'},
+];
+const END=13.8, MOVE=1.0, PRESS=0.35;
+const t=parseFloat(new URLSearchParams(location.hash.slice(1)).get("t")||"0");
+let cur={x:520+OX.a, y:300}, win_=S.float, mode="halves", hl=null, cap=steps[0].cap;
+let prev=cur;
+for (const st of steps) {
+  const target=btn(st.win, st.b);
+  const start=st.t-MOVE-0.2;
+  if (t<start-0.6) break;
+  cap=st.cap; win_=st.win; mode=st.mode;
+  if (t<start) { cur=prev; break; }
+  if (t<st.t) { const u=ease(Math.min(1,(t-start)/MOVE)); cur={x:lerp(prev.x,target.x,u), y:lerp(prev.y,target.y,u)}; break; }
+  cur=target;
+  if (t<st.t+PRESS) { hl=st.b; break; }
+  win_=st.to; prev=target;
+}
+document.getElementById("capt").innerHTML=cap;
+const sa=screen("sa"), sb=screen("sb");
+const scr={a:sa,b:sb};
+const opts={left:win_.d==="b", right:win_.d==="a"};
+if (hl===0||hl===1||hl===2) opts.hl = mode==="thirds" ? hl : (hl===2?1:0);
+if (hl==="R") opts.right="hl"; if (hl==="L") opts.left="hl";
+win(scr[win_.d], win_.x, win_.y, win_.w, win_.h, "Notes", mode, opts);
+zoom(scr[win_.d], win_.d==="a" && win_.x<W/2 ? 370 : (win_.d==="b"? 370 : 15), 150, 180, mode, opts, 34, 19, 2.3);
+cursor(document.getElementById("stage"), cur.x-2, cur.y+1);
+</script></body></html>

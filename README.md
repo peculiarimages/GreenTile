@@ -27,6 +27,8 @@ A small macOS menu-bar utility that puts tiling buttons right under the traffic 
 window, so you can snap a window to the left or right half of the screen with one click: no
 hovering, no menu, no keyboard shortcut to remember.
 
+![GreenTile in action: left half, right half, thirds with Option, and moving a window to a second display](docs/images/demo.gif)
+
 <p align="center">
   <img src="docs/images/buttons-halves.png" width="252" alt="Two GreenTile buttons under the red and green traffic lights">
   &nbsp;&nbsp;
@@ -143,6 +145,8 @@ runs the unit tests for the layout and placement logic.
 - `GreenTile/Actions/` the tiling action.
 - `docs/images/` the screenshots and illustrations in this README (`illustrations.html` draws the
   mock displays; open it with `#f1`, `#f2` or `#f3` and take a 1320 × 415 screenshot at 2×).
+- `docs/images/demo.gif` comes from `animation.html` (one 1320 × 445 screenshot per frame at
+  `#t=<seconds>`, 12 per second) put together with `swift Scripts/make-gif.swift <frames dir> demo.gif 0.75 0.0833`.
 - `Config/` build settings, including the signing setup described above.
 - `project.yml` is the source of truth for the Xcode project. Edit it and regenerate with
   [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen generate`).
