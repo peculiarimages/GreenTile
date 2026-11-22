@@ -846,7 +846,22 @@ enum DebugTools {
         }
     }
 
+    /// The Accessibility permission window's content, light and dark.
+    private static func renderPermission(into directory: URL) {
+        for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
+            let controller = PermissionWindowController()
+            guard let window = controller.window, let content = window.contentView else { continue }
+            window.appearance = NSAppearance(named: appearance)
+            window.setContentSize(content.fittingSize)
+            content.layoutSubtreeIfNeeded()
+            content.wantsLayer = true
+            content.layer?.backgroundColor = NSColor(white: name == "dark" ? 0.17 : 0.93, alpha: 1).cgColor
+            writePNG(of: content, scale: 2, to: directory.appendingPathComponent("permission-\(name).png"))
+        }
+    }
+
     private static func renderOverlay(into directory: URL) {
+        renderPermission(into: directory)
         renderHelp(into: directory)
         renderChevrons(into: directory)
         renderStates(into: directory)

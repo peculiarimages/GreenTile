@@ -15,8 +15,9 @@ Unzip it, drag **GreenTile.app** to your Applications folder, and open it. It ne
 The download is **not notarized by Apple**, so the first time you open it macOS will say it can't
 check the app for malicious software. To allow it, open **System Settings > Privacy & Security**,
 scroll to the Security section, and click **Open Anyway** next to the GreenTile message (or run
-`xattr -dr com.apple.quarantine /Applications/GreenTile.app` in Terminal). Then grant it
-**Accessibility** access when asked: see [Requirements](#requirements). A SHA-256 checksum is
+`xattr -dr com.apple.quarantine /Applications/GreenTile.app` in Terminal). Then switch on
+**Accessibility** access for it: GreenTile opens a window that explains how, along with System
+Settings at the right page (see [Requirements](#requirements)). A SHA-256 checksum is
 published next to each download (`GreenTile.zip.sha256`), and the full source is in this
 repository if you would rather build it yourself.
 
@@ -65,8 +66,14 @@ or above the main one.
 - macOS 14 or later.
 - Xcode 15 or later to build it. There is no prebuilt download yet.
 - **Accessibility permission.** GreenTile finds each window's traffic lights and moves windows
-  through the Accessibility API, so macOS will ask you to allow it (System Settings > Privacy &
-  Security > Accessibility). Without it nothing appears.
+  through the Accessibility API, so it needs to be switched on in System Settings > Privacy &
+  Security > Accessibility. Without it nothing appears. Until it is granted, GreenTile asks in every
+  way macOS allows: the system prompt (macOS only shows it once per app), its own window with the
+  steps, and System Settings opened at the Accessibility list, where GreenTile is already added and
+  only needs switching on. The window closes by itself once access is on. If GreenTile is switched
+  on but still not trusted (an entry left over from an older build), **Ask Again** in that window
+  removes GreenTile's entry and asks afresh. The window is also under the menu-bar icon's
+  "Grant Accessibility Access…".
 
 ## Build and run
 
@@ -133,7 +140,7 @@ Accessibility permission:
 
 | Switch | Does |
 |---|---|
-| `--render-overlay <dir>` | writes light/dark PNGs of the buttons and the help bubble |
+| `--render-overlay <dir>` | writes light/dark PNGs of the buttons, the help bubble and the permission window |
 | `--dump-windows <file>` | reports every window the scan finds and where its buttons would go |
 | `--selftest-tile <file>` | tiles a throwaway window to every layout on every display and checks the result |
 | `--selftest-stacking <file>` | re-fronts a throwaway window repeatedly and checks its buttons come back in front |

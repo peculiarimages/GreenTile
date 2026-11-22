@@ -11,6 +11,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let overlay = OverlayController()
     private var statusItem: NSStatusItem?
     private var trustPoll: Timer?
+    private lazy var permissionWindow: PermissionWindowController = {
+        let controller = PermissionWindowController()
+        controller.onGranted = { [weak self] in self?.refreshStatusIcon() }
+        return controller
+    }()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         #if DEBUG
@@ -27,10 +32,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         buildStatusItem()
 
-        // Ask for Accessibility access once at launch (the system shows its own prompt), then keep
-        // checking so the menu icon reflects the change as soon as it is granted.
-        if !AXIsProcessTrusted() {
-            AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary)
+        // Without Accessibility access nothing works, so ask in every way macOS allows: the system
+        // prompt, our own explanation window, and System Settings opened at the right list. Then
+        // keep checking so the menu icon reflects the change as soon as it is granted.
+        if !AccessibilityPermission.isGranted {
+            permissionWindow.present(openSettings: true)
         }
         trustPoll = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
             self?.refreshStatusIcon()
@@ -109,9 +115,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func openAccessibilitySettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-            NSWorkspace.shared.open(url)
-        }
+        permissionWindow.present(openSettings: true)
     }
 
     @objc private func toggleLaunchAtLogin() {
