@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         static let enabled = "enabled"
         static let thirdsByDefault = "thirdsByDefault"
         static let keepTilesInStageManager = "keepTilesInStageManager"
+        static let keepTilesAcrossDisplays = "keepTilesAcrossDisplays"
         static let appStyles = "appStyles"
     }
 
@@ -28,10 +29,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         #endif
         UserDefaults.standard.register(defaults: [Key.enabled: true, Key.thirdsByDefault: false,
-                                                  Key.keepTilesInStageManager: true])
+                                                  Key.keepTilesInStageManager: true,
+                                                  Key.keepTilesAcrossDisplays: true])
         overlay.isEnabled = UserDefaults.standard.bool(forKey: Key.enabled)
         overlay.thirdsByDefault = UserDefaults.standard.bool(forKey: Key.thirdsByDefault)
         overlay.keepsTilesInStageManager = UserDefaults.standard.bool(forKey: Key.keepTilesInStageManager)
+        overlay.keepsTilesAcrossDisplays = UserDefaults.standard.bool(forKey: Key.keepTilesAcrossDisplays)
         overlay.onThirdsByDefaultChange = { UserDefaults.standard.set($0, forKey: Key.thirdsByDefault) }
         let stored = UserDefaults.standard.dictionary(forKey: Key.appStyles) as? [String: String] ?? [:]
         overlay.appStyles = stored.compactMapValues(AppOverlayStyle.init(rawValue:))
@@ -96,6 +99,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         stage.state = overlay.keepsTilesInStageManager ? .on : .off
         stage.toolTip = "A tiled window dragged in from the Stage Manager strip goes back to the same tile"
         menu.addItem(stage)
+
+        let displays = NSMenuItem(title: "Keep Tiles Across Displays", action: #selector(toggleKeepTilesAcrossDisplays),
+                                  keyEquivalent: "")
+        displays.target = self
+        displays.state = overlay.keepsTilesAcrossDisplays ? .on : .off
+        displays.toolTip = "A tiled window dragged onto another display takes the same tile there"
+        menu.addItem(displays)
 
         addAppStyleItems(to: menu)
 
@@ -217,6 +227,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         credits.addAttribute(.paragraphStyle, value: centered, range: NSRange(location: 0, length: credits.length))
         NSApp.activate(ignoringOtherApps: true)
         NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
+    }
+
+    @objc private func toggleKeepTilesAcrossDisplays() {
+        overlay.keepsTilesAcrossDisplays.toggle()
+        UserDefaults.standard.set(overlay.keepsTilesAcrossDisplays, forKey: Key.keepTilesAcrossDisplays)
     }
 
     @objc private func openAccessibilitySettings() {

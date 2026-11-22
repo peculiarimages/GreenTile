@@ -41,6 +41,11 @@ final class OverlayController {
         get { snapper.isEnabled }
         set { snapper.isEnabled = newValue }
     }
+    /// Whether a tiled window dragged onto another display takes the same tile there.
+    var keepsTilesAcrossDisplays: Bool {
+        get { snapper.keepsTilesAcrossDisplays }
+        set { snapper.keepsTilesAcrossDisplays = newValue }
+    }
     private let snapper = StageSnapper()
 
     /// Apps with their own setting, by bundle identifier. Apps not listed are `.standard`.

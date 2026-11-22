@@ -82,6 +82,10 @@ the outline is that green with 33% black added (`#448929`).
   as it lines up with GreenTile's tile to within a couple of points (macOS's own tiling leaves
   margins unless "Tiled windows have margins" is off in Desktop & Dock settings). Switch it off with
   "Keep Tiles in Stage Manager" in the menu-bar menu.
+- **Dragging to another display:** drag a tiled window onto another display and, once you let go,
+  it takes the same tile there: a left half becomes the left half of the new display. Drag it off its
+  tile on the same display and it stays where you put it (and is no longer treated as tiled). Switch
+  it off with "Keep Tiles Across Displays" in the menu-bar menu.
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
@@ -153,6 +157,8 @@ runs the unit tests for the layout and placement logic.
   with no mouse button held. A window that arrives on screen with a remembered tile, such as one
   dragged in from the Stage Manager strip, is tiled again within 4 s, at most twice, and only while
   Stage Manager is on.
+  A tiled window that settles on a different display than the one its tile was remembered on, and
+  off any tile, gets the same tile on its new display, with the same limits.
 
 ## Project layout
 

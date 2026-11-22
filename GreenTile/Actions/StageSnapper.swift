@@ -16,9 +16,14 @@ import GreenTileKit
 ///   another Space, unhidden. If it has a remembered tile, it gets a few seconds to land, and is
 ///   then tiled again if it is not already there. A window that comes back where it was (switching
 ///   to its whole stage, for example) already matches and is left alone.
+/// * A tiled window dragged onto another display lands wherever it is let go; once it has settled
+///   there, it takes the same tile on that display (a left half becomes the left half there).
+///   Dragged off its tile on the same display, it forgets the tile instead.
 final class StageSnapper {
-    /// Off means windows are only remembered, never moved.
+    /// Off means Stage Manager arrivals are only remembered, never moved.
     var isEnabled = true
+    /// Off means a tiled window dragged to another display stays where it is dropped.
+    var keepsTilesAcrossDisplays = true
 
     /// How long a window must keep the same frame before it counts as having landed.
     static let settleTime: CFTimeInterval = 0.3
@@ -40,7 +45,13 @@ final class StageSnapper {
     }
 
     private var seen: [CGWindowID: Seen] = [:]
-    private var remembered: [CGWindowID: TileLayout] = [:]
+    /// A window's tile and the display (index into `Display.all()`) it was on.
+    private struct Remembered {
+        let layout: TileLayout
+        let display: Int
+    }
+
+    private var remembered: [CGWindowID: Remembered] = [:]
     private var pending: [CGWindowID: Pending] = [:]
 
     private var stageManagerCheckedAt: CFTimeInterval = -.infinity
@@ -70,18 +81,25 @@ final class StageSnapper {
             if state.bounds != window.bounds { state = Seen(bounds: window.bounds, stableSince: now) }
             defer { next[window.id] = state }
 
-            if arrived, isEnabled, let layout = remembered[window.id], isStageManagerOn(now: now) {
-                pending[window.id] = Pending(layout: layout, deadline: now + Self.patience)
+            if arrived, isEnabled, let tile = remembered[window.id], isStageManagerOn(now: now) {
+                pending[window.id] = Pending(layout: tile.layout, deadline: now + Self.patience)
             }
 
             guard mouseUp, now - state.stableSince >= Self.settleTime,
                   let index = ScreenGeometry.areaIndex(for: window.bounds, in: frames) else { continue }
             let current = TileLayout.matching(window.bounds, in: displays[index].usable, gap: WindowActions.tileGap)
+            let found = current.map { Remembered(layout: $0, display: index) }
+
+            // Dragged onto another display and let go off any tile: take the old tile there.
+            if pending[window.id] == nil, current == nil, keepsTilesAcrossDisplays,
+               let tile = remembered[window.id], tile.display != index {
+                pending[window.id] = Pending(layout: tile.layout, deadline: now + Self.patience)
+            }
 
             if var wanted = pending[window.id] {
                 if current == wanted.layout || now > wanted.deadline || wanted.attempts >= Self.maxAttempts {
                     pending[window.id] = nil
-                    remembered[window.id] = current
+                    remembered[window.id] = found
                     continue
                 }
                 guard let element = element(window.id) else { continue }
@@ -92,7 +110,7 @@ final class StageSnapper {
                 state.stableSince = now
                 moved = true
             } else {
-                remembered[window.id] = current
+                remembered[window.id] = found
             }
         }
 
