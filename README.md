@@ -69,6 +69,13 @@ the outline is that green with 33% black added (`#448929`).
   covering the same share of it (a window tiled to a left half stays a left half). Hovering it names
   the display. With a single display, or on the side of a window that has no neighbour, there is no
   chevron; the tiling buttons are the same either way.
+- **Stage Manager:** drag a tiled window in from the Stage Manager strip and, once you let go, it
+  goes back to the tile it had in its old stage: a window that was a left half becomes the left half
+  of the stage in front. Windows that were not tiled stay where you drop them. The tile is read from
+  where the window actually is, so a window you put on a half or third yourself counts too, as long
+  as it lines up with GreenTile's tile to within a couple of points (macOS's own tiling leaves
+  margins unless "Tiled windows have margins" is off in Desktop & Dock settings). Switch it off with
+  "Keep Tiles in Stage Manager" in the menu-bar menu.
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
@@ -135,6 +142,10 @@ runs the unit tests for the layout and placement logic.
   window. A window in front of it hides its buttons too, and clicking never steals focus.
 - **Tiling.** Sets the window's size and position through Accessibility. Tile edges are rounded
   once and shared, so neighbouring tiles always meet exactly.
+- **Stage Manager.** Each poll remembers which tile (if any) every window is on once it has settled
+  with no mouse button held. A window that arrives on screen with a remembered tile, such as one
+  dragged in from the Stage Manager strip, is tiled again within 4 s, at most twice, and only while
+  Stage Manager is on.
 
 ## Project layout
 

@@ -6,6 +6,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private enum Key {
         static let enabled = "enabled"
         static let thirdsByDefault = "thirdsByDefault"
+        static let keepTilesInStageManager = "keepTilesInStageManager"
     }
 
     private let overlay = OverlayController()
@@ -24,9 +25,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             return
         }
         #endif
-        UserDefaults.standard.register(defaults: [Key.enabled: true, Key.thirdsByDefault: false])
+        UserDefaults.standard.register(defaults: [Key.enabled: true, Key.thirdsByDefault: false,
+                                                  Key.keepTilesInStageManager: true])
         overlay.isEnabled = UserDefaults.standard.bool(forKey: Key.enabled)
         overlay.thirdsByDefault = UserDefaults.standard.bool(forKey: Key.thirdsByDefault)
+        overlay.keepsTilesInStageManager = UserDefaults.standard.bool(forKey: Key.keepTilesInStageManager)
         overlay.onThirdsByDefaultChange = { UserDefaults.standard.set($0, forKey: Key.thirdsByDefault) }
         overlay.start()
 
@@ -83,6 +86,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         thirds.state = overlay.thirdsByDefault ? .on : .off
         menu.addItem(thirds)
 
+        let stage = NSMenuItem(title: "Keep Tiles in Stage Manager", action: #selector(toggleKeepTiles),
+                               keyEquivalent: "")
+        stage.target = self
+        stage.state = overlay.keepsTilesInStageManager ? .on : .off
+        stage.toolTip = "A tiled window dragged in from the Stage Manager strip goes back to the same tile"
+        menu.addItem(stage)
+
         menu.addItem(.separator())
 
         if AXIsProcessTrusted() {
@@ -116,6 +126,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func toggleThirds() {
         overlay.thirdsByDefault.toggle()
+    }
+
+    @objc private func toggleKeepTiles() {
+        overlay.keepsTilesInStageManager.toggle()
+        UserDefaults.standard.set(overlay.keepsTilesInStageManager, forKey: Key.keepTilesInStageManager)
     }
 
     @objc private func openAccessibilitySettings() {

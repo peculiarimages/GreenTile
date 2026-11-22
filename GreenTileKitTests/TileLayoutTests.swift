@@ -109,4 +109,22 @@ final class TileLayoutTests: XCTestCase {
         XCTAssertEqual(TileMode.halves.slots.first?.column, TileMode.thirds.slots.first?.column)
         XCTAssertEqual(TileMode.halves.slots.last?.column, TileMode.thirds.slots.last?.column)
     }
+
+    func testMatchingFindsTheExactTile() {
+        for layout in TileLayout.allCases {
+            XCTAssertEqual(TileLayout.matching(layout.frame(in: area), in: area), layout)
+        }
+    }
+
+    func testMatchingAllowsAppsThatSizeInSteps() {
+        // A terminal that rounds its width down to whole character cells still counts as tiled.
+        let terminal = CGRect(x: 0, y: 31, width: 1271, height: 1362)
+        XCTAssertEqual(TileLayout.matching(terminal, in: area), .leftHalf)
+    }
+
+    func testMatchingRejectsAWindowThatWasMoved() {
+        XCTAssertNil(TileLayout.matching(CGRect(x: 40, y: 31, width: 1280, height: 1369), in: area))
+        XCTAssertNil(TileLayout.matching(CGRect(x: 0, y: 31, width: 1000, height: 1369), in: area))
+        XCTAssertNil(TileLayout.matching(CGRect(x: 600, y: 300, width: 900, height: 700), in: area))
+    }
 }

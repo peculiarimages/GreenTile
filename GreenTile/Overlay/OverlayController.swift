@@ -36,6 +36,13 @@ final class OverlayController {
     }
     var onThirdsByDefaultChange: ((Bool) -> Void)?
 
+    /// Whether a window Stage Manager brings into the stage in front goes back on the tile it had.
+    var keepsTilesInStageManager: Bool {
+        get { snapper.isEnabled }
+        set { snapper.isEnabled = newValue }
+    }
+    private let snapper = StageSnapper()
+
     /// Where the controller reads the held modifier keys from. This asks the system for the
     /// current keyboard state directly, so it is right even when this app is in the background and
     /// has seen no key events. The self-test replaces it.
@@ -160,6 +167,7 @@ final class OverlayController {
         defer { scheduleTick() }
         guard isEnabled, AXIsProcessTrusted() else {
             removeAllPanels()
+            snapper.pause()
             return
         }
 
@@ -252,6 +260,11 @@ final class OverlayController {
             if let panel = panels[key] { help.hide(ifOwnedBy: panel) }
             panels[key]?.orderOut(nil)
             panels[key] = nil
+        }
+
+        // Put windows Stage Manager has just brought in back on their tiles.
+        if snapper.update(windows: candidates, element: { self.tracked[$0]?.element }, displays: displays) {
+            boost()
         }
 
         if !scanInFlight, hasUnexamined || CACurrentMediaTime() - lastScanStart > 1.5 {
