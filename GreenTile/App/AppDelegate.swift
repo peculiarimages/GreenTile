@@ -60,9 +60,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private func refreshStatusIcon() {
         let active = overlay.isEnabled && AXIsProcessTrusted()
-        let image = NSImage(systemSymbolName: "rectangle.split.2x1", accessibilityDescription: "GreenTile")
-        image?.isTemplate = true
+        // The capybara holding a green tile, in colour (not a template image), 18 pt square.
+        let image = NSImage(named: "MenuBarIcon")
+        image?.size = NSSize(width: 18, height: 18)
+        image?.isTemplate = false
+        image?.accessibilityDescription = "GreenTile"
         statusItem?.button?.image = image
+        statusItem?.button?.imageScaling = .scaleProportionallyDown
         statusItem?.button?.appearsDisabled = !active
     }
 

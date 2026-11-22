@@ -99,7 +99,7 @@ open GreenTile.xcodeproj      # then press Run
 
 or from the command line: `xcodebuild -project GreenTile.xcodeproj -scheme GreenTile build`.
 
-A tiling icon appears in the menu bar. From there you can hide the buttons, switch to thirds,
+The GreenTile icon (the capybara with its green tile) appears in the menu bar. From there you can hide the buttons, switch to thirds,
 check the permission, and have GreenTile open at login.
 
 ### Signing and the Accessibility permission
