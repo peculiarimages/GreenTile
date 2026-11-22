@@ -27,10 +27,18 @@ A small macOS menu-bar utility that puts tiling buttons right under the traffic 
 window, so you can snap a window to the left or right half of the screen with one click: no
 hovering, no menu, no keyboard shortcut to remember.
 
-```
- ● ● ●            ● ● ●
- ◐   ◑            ◖ ▮ ◗      <- hold Option
-```
+<p align="center">
+  <img src="docs/images/buttons-halves.png" width="252" alt="Two GreenTile buttons under the red and green traffic lights">
+  &nbsp;&nbsp;
+  <img src="docs/images/buttons-thirds.png" width="236" alt="Three GreenTile buttons, one under each traffic light, while Option is held">
+  <br><sub>Two buttons for halves, and three for thirds while you hold Option.</sub>
+</p>
+
+![Clicking the button under the red light makes the window fill the left half of the display](docs/images/how-halves.png)
+
+![Holding Option shows three buttons per window; three clicks tile three windows into thirds](docs/images/how-thirds.png)
+
+![With a second display to the right, a chevron next to the buttons moves the window there, keeping its left half](docs/images/how-two-displays.png)
 
 Each button sits directly below one of the traffic lights, centred on it, and is drawn like a
 miniature green traffic light: half green for the part of the screen the window will take, half
@@ -130,6 +138,8 @@ runs the unit tests for the layout and placement logic.
 - `GreenTile/Overlay/` the round button, its panel, the help bubble, and the controller that keeps
   one panel per button.
 - `GreenTile/Actions/` the tiling action.
+- `docs/images/` the screenshots and illustrations in this README (`illustrations.html` draws the
+  mock displays; open it with `#f1`, `#f2` or `#f3` and take a 1320 × 475 screenshot at 2×).
 - `Config/` build settings, including the signing setup described above.
 - `project.yml` is the source of truth for the Xcode project. Edit it and regenerate with
   [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen generate`).

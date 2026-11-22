@@ -1,0 +1,162 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  :root { --g:#66CC3D; --gd:#448929; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#ffffff; font:15px -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; color:#1d1d1f; }
+  .fig { display:none; padding:28px 32px 24px; width:1320px; }
+  .fig.on { display:block; }
+  .row { display:flex; align-items:flex-start; gap:24px; }
+  .arrow { margin-top:150px; }
+  .row.tight { gap:0; }
+  .col { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .cap { font-size:17px; color:#3a3a3c; text-align:center; max-width:600px; line-height:1.35; }
+  .cap b { color:#1d1d1f; }
+  .title { font-size:22px; font-weight:700; margin:0 0 18px; }
+  .bezel { background:#1c1c1e; border-radius:14px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,.18); }
+  .screen { position:relative; width:560px; height:350px; border-radius:4px; overflow:hidden;
+            background:linear-gradient(160deg,#8ec5e8 0%,#b9d9c3 45%,#e8d9b5 100%); }
+  .screen.b { background:linear-gradient(160deg,#c9b6e4 0%,#a8c8e8 55%,#bfe3d0 100%); }
+  .menubar { position:absolute; left:0; right:0; top:0; height:16px; background:rgba(255,255,255,.72);
+             font-size:10px; line-height:16px; padding-left:10px; color:#222; }
+  .menubar span { margin-right:12px; }
+  .menubar .tile { position:absolute; right:10px; top:3px; width:14px; height:10px; border:1.5px solid #333; border-radius:2px; }
+  .menubar .tile:after { content:""; position:absolute; left:5px; top:0; bottom:0; border-left:1.5px solid #333; }
+  .dock { position:absolute; bottom:4px; left:50%; transform:translateX(-50%); height:26px; width:210px;
+          background:rgba(255,255,255,.45); border-radius:8px; }
+  .win { position:absolute; background:#fff; border-radius:9px; box-shadow:0 4px 14px rgba(0,0,0,.25);
+         overflow:hidden; border:1px solid rgba(0,0,0,.12); }
+  .win .bar { height:24px; background:#f2f2f4; border-bottom:1px solid #e1e1e4; }
+  .win .side { position:absolute; left:0; top:24px; bottom:0; width:30%; background:#ededf0; }
+  .win .line { position:absolute; height:6px; border-radius:3px; background:#d9d9de; }
+  .win .name { position:absolute; top:5px; left:0; right:0; text-align:center; font-size:10.5px; font-weight:600; color:#555; }
+  .ghost { position:absolute; border:2px dashed rgba(29,29,31,.45); border-radius:9px; background:rgba(255,255,255,.18); }
+  .arrow { font-size:46px; color:#8e8e93; }
+  .zoom { position:absolute; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,.3); overflow:hidden; background:#f2f2f4; }
+  .key { display:inline-block; border:1.5px solid #8e8e93; border-bottom-width:3px; border-radius:6px; padding:2px 9px; font-size:14px; background:#fafafa; }
+  svg { position:absolute; overflow:visible; }
+</style></head>
+<body>
+
+<!-- 1: halves on one display -->
+<div class="fig" id="f1">
+  <div class="row">
+    <div class="col">
+      <div class="bezel"><div class="screen" id="s1a"></div></div>
+      <div class="cap"><b>Click the button under the red light…</b></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="col">
+      <div class="bezel"><div class="screen" id="s1b"></div></div>
+      <div class="cap"><b>…and the window fills the left half.</b> The one under the green light does the right half.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2: thirds -->
+<div class="fig" id="f2">
+  <div class="row">
+    <div class="col">
+      <div class="bezel"><div class="screen" id="s2a"></div></div>
+      <div class="cap"><b>Hold <span class="key">⌥ option</span></b> and every window gets three buttons, for the left, center and right thirds.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="col">
+      <div class="bezel"><div class="screen" id="s2b"></div></div>
+      <div class="cap"><b>Three windows, three clicks.</b> Right-click any button to make thirds the default.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3: two displays -->
+<div class="fig" id="f3">
+  <div class="row tight" style="justify-content:center;gap:6px">
+    <div class="bezel"><div class="screen" id="s3a"></div></div>
+    <div class="bezel"><div class="screen b" id="s3b"></div></div>
+  </div>
+  <div class="row" style="justify-content:space-around;margin-top:14px">
+    <div class="cap"><b>A second display to the right?</b> A <b>›</b> appears beside the buttons. Click it…</div>
+    <div class="cap"><b>…and the window moves over, still a left half.</b> Now a <b>‹</b> on its left takes it back.</div>
+  </div>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+const G="#66CC3D", GD="#448929";
+// Traffic lights + GreenTile buttons, drawn as one SVG at (x,y) of a window, scaled by k.
+function lights(win, mode, k=1, opts={}) {
+  const s=document.createElementNS(NS,"svg");
+  s.setAttribute("width",200*k); s.setAttribute("height",60*k);
+  s.style.left="0px"; s.style.top="0px";
+  const g=document.createElementNS(NS,"g"); g.setAttribute("transform",`scale(${k})`); s.appendChild(g);
+  const cx=[17,34,51], cy=12, r=5.6, br=4.3, by=cy+13;
+  ["#FF5F57","#FEBC2E","#28C840"].forEach((c,i)=>{ const e=document.createElementNS(NS,"circle");
+    e.setAttribute("cx",cx[i]); e.setAttribute("cy",cy); e.setAttribute("r",r); e.setAttribute("fill",c);
+    e.setAttribute("stroke","rgba(0,0,0,.12)"); e.setAttribute("stroke-width",".5"); g.appendChild(e); });
+  const spans = mode==="halves" ? [[0,0,.5],[2,.5,1]] : mode==="thirds" ? [[0,0,1/3],[1,1/3,2/3],[2,2/3,1]] : [];
+  spans.forEach(([i,a,b],n)=>{
+    const id="c"+Math.random().toString(36).slice(2);
+    const cp=document.createElementNS(NS,"clipPath"); cp.id=id;
+    const cc=document.createElementNS(NS,"circle"); cc.setAttribute("cx",cx[i]); cc.setAttribute("cy",by); cc.setAttribute("r",br); cp.appendChild(cc); g.appendChild(cp);
+    const bg=document.createElementNS(NS,"circle"); bg.setAttribute("cx",cx[i]); bg.setAttribute("cy",by); bg.setAttribute("r",br); bg.setAttribute("fill","#fafafa"); g.appendChild(bg);
+    const rc=document.createElementNS(NS,"rect"); rc.setAttribute("x",cx[i]-br+a*2*br); rc.setAttribute("y",by-br);
+    rc.setAttribute("width",(b-a)*2*br); rc.setAttribute("height",2*br); rc.setAttribute("fill",G); rc.setAttribute("clip-path",`url(#${id})`); g.appendChild(rc);
+    const ol=document.createElementNS(NS,"circle"); ol.setAttribute("cx",cx[i]); ol.setAttribute("cy",by); ol.setAttribute("r",br);
+    ol.setAttribute("fill","none"); ol.setAttribute("stroke",GD); ol.setAttribute("stroke-width","1.2"); g.appendChild(ol);
+    if (opts.hl===n) { const h=document.createElementNS(NS,"circle"); h.setAttribute("cx",cx[i]); h.setAttribute("cy",by); h.setAttribute("r",br+2.6);
+      h.setAttribute("fill","none"); h.setAttribute("stroke","#ff9f0a"); h.setAttribute("stroke-width","1.4"); g.appendChild(h); }
+  });
+  const chev=(x,dir,hl)=>{ const p=document.createElementNS(NS,"path");
+    const d=dir>0?`M${x-1.6},${by-3.6} L${x+1.8},${by} L${x-1.6},${by+3.6}`:`M${x+1.6},${by-3.6} L${x-1.8},${by} L${x+1.6},${by+3.6}`;
+    [[GD,3.2],[G,1.8]].forEach(([c,w])=>{ const q=document.createElementNS(NS,"path"); q.setAttribute("d",d); q.setAttribute("fill","none");
+      q.setAttribute("stroke",c); q.setAttribute("stroke-width",w); q.setAttribute("stroke-linecap","round"); q.setAttribute("stroke-linejoin","round"); g.appendChild(q); });
+    if (hl) { const h=document.createElementNS(NS,"circle"); h.setAttribute("cx",x); h.setAttribute("cy",by); h.setAttribute("r",6.4);
+      h.setAttribute("fill","none"); h.setAttribute("stroke","#ff9f0a"); h.setAttribute("stroke-width","1.4"); g.appendChild(h); } };
+  if (opts.left) chev(cx[0]-12,-1,opts.left==="hl");
+  if (opts.right) chev(cx[2]+12,1,opts.right==="hl");
+  win.appendChild(s);
+}
+function cursor(parent,x,y){ const s=document.createElementNS(NS,"svg"); s.setAttribute("width",16); s.setAttribute("height",22);
+  s.style.left=x+"px"; s.style.top=y+"px";
+  s.innerHTML='<path d="M1,1 L1,17 L5,13 L8,20 L11,19 L8,12 L14,12 Z" fill="#000" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>';
+  parent.appendChild(s); }
+function screen(id){ const el=document.getElementById(id);
+  el.innerHTML='<div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Window</span><div class="tile"></div></div><div class="dock"></div>';
+  return el; }
+// Usable area: below the menu bar (16) and above the dock (34).
+const TOP=16, BOT=350-34, W=560;
+function win(scr,x,y,w,h,name,mode,opts={}){ const d=document.createElement("div"); d.className="win";
+  Object.assign(d.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"});
+  d.innerHTML=`<div class="bar"><div class="name">${name}</div></div><div class="side"></div>`;
+  for(let i=0;i<5;i++){ const l=document.createElement("div"); l.className="line";
+    Object.assign(l.style,{left:(w*0.36)+"px",top:(44+i*18)+"px",width:(w*(0.5-0.07*(i%3)))+"px"}); d.appendChild(l); }
+  lights(d,mode,1,opts); scr.appendChild(d); return d; }
+function ghost(scr,x,y,w,h){ const g=document.createElement("div"); g.className="ghost";
+  Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); scr.appendChild(g); }
+function zoom(scr,x,y,size,mode,opts,fx=30,fy=19,k=3.2){ const z=document.createElement("div"); z.className="zoom";
+  Object.assign(z.style,{left:x+"px",top:y+"px",width:size+"px",height:size+"px"});
+  const inner=document.createElement("div"); inner.style.position="absolute"; inner.style.left=(size/2-fx*k)+"px"; inner.style.top=(size/2-fy*k)+"px";
+  z.appendChild(inner); lights(inner,mode,k,opts); scr.appendChild(z); return z; }
+
+const fig=(location.hash||"#f1").slice(1);
+document.getElementById(fig).classList.add("on");
+
+// Figure 1
+{ const a=screen("s1a"); ghost(a,4,TOP+4,W/2-6,BOT-TOP-8);
+  win(a,150,70,300,190,"Notes","halves",{hl:0}); cursor(a,150+17-2,70+25+1);
+  zoom(a,375,150,170,"halves",{hl:0},34);
+  const b=screen("s1b"); win(b,0,TOP,W/2,BOT-TOP,"Notes","halves"); win(b,W/2+40,60,210,170,"Safari","halves"); }
+// Figure 2
+{ const a=screen("s2a");
+  win(a,30,40,230,160,"Mail","thirds",{hl:0}); win(a,150,110,230,160,"Notes","thirds",{hl:1}); win(a,300,60,230,170,"Safari","thirds",{hl:2});
+  zoom(a,385,150,165,"thirds",{},34,19,3);
+  const b=screen("s2b"); const t=W/3;
+  win(b,0,TOP,t,BOT-TOP,"Mail","thirds"); win(b,t,TOP,t,BOT-TOP,"Notes","thirds"); win(b,2*t,TOP,W-2*t,BOT-TOP,"Safari","thirds"); }
+// Figure 3
+{ const a=screen("s3a"); win(a,0,TOP,W/2,BOT-TOP,"Notes","halves",{right:"hl"});
+  cursor(a,51+12-1,TOP+25+1);
+  zoom(a,350,140,180,"halves",{right:"hl"},40,19,2.7);
+  const b=screen("s3b");
+  win(b,0,TOP,W/2,BOT-TOP,"Notes","halves",{left:true}); }
+</script>
+</body></html>
