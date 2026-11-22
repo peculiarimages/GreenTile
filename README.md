@@ -27,20 +27,20 @@ A small macOS menu-bar utility that puts tiling buttons right under the traffic 
 window, so you can snap a window to the left or right half of the screen with one click: no
 hovering, no menu, no keyboard shortcut to remember.
 
-![GreenTile in action: left half, right half, thirds with Option, and moving a window to a second display](docs/images/demo.gif)
+![GreenTile in action: left half, right half, thirds with Option or right-click, and moving a window to a second display](docs/images/demo.gif)
 
 <p align="center">
   <img src="docs/images/buttons-halves.png" width="252" alt="Two GreenTile buttons under the red and green traffic lights">
   &nbsp;&nbsp;
-  <img src="docs/images/buttons-thirds.png" width="236" alt="Three GreenTile buttons, one under each traffic light, while Option is held">
-  <br><sub>Two buttons for halves, and three for thirds while you hold Option.</sub>
+  <img src="docs/images/buttons-thirds.png" width="236" alt="Three GreenTile buttons, one under each traffic light, while Option is held or after a right-click">
+  <br><sub>Two buttons for halves, and three for thirds while you hold Option, or after you right-click a button.</sub>
 </p>
 
 ![Clicking the button under the red light makes the window fill the left half of the display](docs/images/how-halves.png)
 <p align="center"><sub><b>Click the button under the red light, and the window fills the left half.</b> The one under the green light does the right half.</sub></p>
 
-![Holding Option shows three buttons per window; three clicks tile three windows into thirds](docs/images/how-thirds.png)
-<p align="center"><sub><b>Hold Option and every window gets three buttons</b>, for the left, center and right thirds. Right-click any button to make thirds the default.</sub></p>
+![Holding Option, or right-clicking a button, shows three buttons per window; three clicks tile three windows into thirds](docs/images/how-thirds.png)
+<p align="center"><sub><b>Hold Option, or right-click any button, and every window gets three buttons</b>, for the left, center and right thirds. Option shows them while you hold it; a right-click makes thirds the default.</sub></p>
 
 ![With a second display to the right, a chevron next to the buttons moves the window there, keeping its left half](docs/images/how-two-displays.png)
 <p align="center"><sub><b>Two displays:</b> a › beside the buttons sends the window to the display on the right, still a left half. A ‹ on its left brings it back.</sub></p>
@@ -53,8 +53,8 @@ the outline is that green with 33% black added (`#448929`).
 - **Two buttons:** left half under the red button, right half under the green one (the yellow one
   is left clear). Click ◐ and the window fills the left half of the display it is on (the area
   below the menu bar and beside the Dock); click ◑ for the right half.
-- **Hold Option:** three buttons, left, center and right third, one under each traffic light.
-  Release Option and it goes back to two.
+- **Hold Option (or right-click):** three buttons, left, center and right third, one under each traffic
+  light. Release Option and it goes back to two; after a right-click it stays at three (see below).
 - **Right-click** (or Control-click) any button to switch between halves and thirds for good. With
   thirds as the default, holding Option shows the halves instead, so Option always turns the
   current row over. The menu-bar icon has the same switch ("Thirds Instead of Halves"), and the
