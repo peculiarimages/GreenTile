@@ -172,8 +172,9 @@ final class HelpBubbleView: NSVisualEffectView {
 /// never blocks a click on the window beneath, which means "the pointer is on it" is worked out by
 /// watching where the pointer is rather than from mouse events.
 final class HelpBubble {
-    /// Pause before the bubble first appears: the same as a standard tooltip.
-    static let delay: TimeInterval = 0.45
+    /// Pause before the bubble first appears: a full second, so passing over a button on the way
+    /// somewhere else doesn't bring it up.
+    static let delay: TimeInterval = 1
     /// Pause when moving from one button to the next while a bubble is already up.
     static let switchDelay: TimeInterval = 0.12
     /// How long the pointer may stay away from both the bubble and its button before it hides.

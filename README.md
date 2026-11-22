@@ -59,7 +59,7 @@ the outline is that green with 33% black added (`#448929`).
   thirds as the default, holding Option shows the halves instead, so Option always turns the
   current row over. The menu-bar icon has the same switch ("Thirds Instead of Halves"), and the
   choice is remembered.
-- **Hover** a button for a moment and a small bubble says what it does and how to switch. It stays
+- **Hover** a button for a second and a small bubble says what it does and how to switch. It stays
   while the pointer is on the button or on the bubble, and goes once the pointer has been away from
   both for 2 seconds (or straight away when you click). Every bubble ends with the project's address
   next to the app icon; click it to open the project page.
