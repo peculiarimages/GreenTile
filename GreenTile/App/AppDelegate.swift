@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private let overlay = OverlayController()
+    private let updater = Updater()
     private var statusItem: NSStatusItem?
     private var trustPoll: Timer?
     private lazy var permissionWindow: PermissionWindowController = {
@@ -128,6 +129,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(login)
 
         menu.addItem(.separator())
+        let update = NSMenuItem(title: "Update GreenTile…", action: #selector(checkForUpdate), keyEquivalent: "")
+        update.target = self
+        menu.addItem(update)
         let about = NSMenuItem(title: "About GreenTile", action: #selector(showAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
@@ -232,6 +236,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func toggleKeepTilesAcrossDisplays() {
         overlay.keepsTilesAcrossDisplays.toggle()
         UserDefaults.standard.set(overlay.keepsTilesAcrossDisplays, forKey: Key.keepTilesAcrossDisplays)
+    }
+
+    @MainActor @objc private func checkForUpdate() {
+        updater.checkAndOffer()
     }
 
     @objc private func openAccessibilitySettings() {

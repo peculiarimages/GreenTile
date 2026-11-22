@@ -25,6 +25,7 @@
 		8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */; };
 		9419B39892C359383809ADF7 /* ButtonColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F3DB80F7D3B873936EE12B /* ButtonColors.swift */; };
 		96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */; };
+		7C3A9E1D5B2F4A6C8E0D1F2A /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4BAF2E6C3A5B7D9F1E2A3B /* Updater.swift */; };
 		A983D6F835AA15C7C512DDDF /* ProjectLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F341AFAF7330C862F45BC976 /* ProjectLinks.swift */; };
 		AB4DC95A34A5DA391C6CE16B /* PermissionWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4519AFE3BC41C6D3662E71B8 /* PermissionWindow.swift */; };
 		B61FC37181E88ABCFC1541DA /* ButtonHelp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BAA94FC07D28EA45376034 /* ButtonHelp.swift */; };
@@ -108,6 +109,7 @@
 		97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileLayoutTests.swift; sourceTree = "<group>"; };
 		998D46ED752DDE6F65961F2C /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8D4BAF2E6C3A5B7D9F1E2A3B /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		9E5E5721783408425EA6B6BD /* OverlayPlacement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPlacement.swift; sourceTree = "<group>"; };
 		A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
 		AAB01643AF95ECCD4E18C4B5 /* GreenTile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GreenTile.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -249,6 +251,7 @@
 			children = (
 				3759CDB91E01B4585B247B28 /* AccessibilityPermission.swift */,
 				9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */,
+				8D4BAF2E6C3A5B7D9F1E2A3B /* Updater.swift */,
 				4C5729CDE331BC603794CA7F /* DebugTools.swift */,
 				C21D5C467E98FF8BA4D02EAE /* main.swift */,
 				4519AFE3BC41C6D3662E71B8 /* PermissionWindow.swift */,
@@ -380,6 +383,7 @@
 				53D0DAAF151C30FA4FD955A2 /* AX.swift in Sources */,
 				DB6F3966FF65A57C02620B65 /* AccessibilityPermission.swift in Sources */,
 				96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */,
+				7C3A9E1D5B2F4A6C8E0D1F2A /* Updater.swift in Sources */,
 				0A7D39B4C356D92AAA18538F /* ButtonPalette.swift in Sources */,
 				C3C9A9EF2C1EF0A10062B41F /* ChevronButton.swift in Sources */,
 				691D972881893DCD8601BF78 /* DebugTools.swift in Sources */,

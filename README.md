@@ -21,6 +21,15 @@ Settings at the right page (see [Requirements](#requirements)). A SHA-256 checks
 published next to each download (`GreenTile.zip.sha256`), and the full source is in this
 repository if you would rather build it yourself.
 
+**Updating:** choose **Update GreenTile…** in the menu-bar menu. GreenTile checks GitHub for a newer
+release, downloads it, checks it against its published SHA-256 and its code signature, replaces
+itself in Applications and restarts. Each version is a new app as far as macOS is concerned, so the
+old Accessibility switch no longer applies: the updater clears it, and the new version asks again,
+so you only need to switch GreenTile on once more. No Open Anyway is needed, because a file the app
+downloads itself is not quarantined. (Updating by hand works too: quit GreenTile, replace the app
+in Applications with the new download, open it, click Open Anyway if asked, and use **Ask Again** in
+GreenTile's permission window if Accessibility looks on but nothing appears.)
+
 ## What it does
 
 A small macOS menu-bar utility that puts tiling buttons right under the traffic lights of every
@@ -117,8 +126,8 @@ open GreenTile.xcodeproj      # then press Run
 or from the command line: `xcodebuild -project GreenTile.xcodeproj -scheme GreenTile build`.
 
 The GreenTile icon (the capybara with its green tile) appears in the menu bar. From there you can hide the buttons, switch to thirds,
-check the permission, and have GreenTile open at login. **About GreenTile**, just above Quit, shows
-the version and a link to the project page.
+check the permission, have GreenTile open at login, and update it (**Update GreenTile…**).
+**About GreenTile**, just above Quit, shows the version and a link to the project page.
 
 ### Signing and the Accessibility permission
 
