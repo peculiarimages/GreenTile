@@ -12,6 +12,9 @@
   .col { display:flex; flex-direction:column; align-items:center; gap:12px; }
   .cap { font-size:17px; color:#3a3a3c; text-align:center; max-width:600px; line-height:1.35; }
   .cap b { color:#1d1d1f; }
+  /* Captions are written next to the images (README, blog), so they are hidden in the render. */
+  .cap { display:none; }
+  .fig { padding:20px 32px 22px; }
   .title { font-size:22px; font-weight:700; margin:0 0 18px; }
   .bezel { background:#1c1c1e; border-radius:14px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,.18); }
   .screen { position:relative; width:560px; height:350px; border-radius:4px; overflow:hidden;

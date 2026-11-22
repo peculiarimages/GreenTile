@@ -35,10 +35,13 @@ hovering, no menu, no keyboard shortcut to remember.
 </p>
 
 ![Clicking the button under the red light makes the window fill the left half of the display](docs/images/how-halves.png)
+<p align="center"><sub><b>Click the button under the red light, and the window fills the left half.</b> The one under the green light does the right half.</sub></p>
 
 ![Holding Option shows three buttons per window; three clicks tile three windows into thirds](docs/images/how-thirds.png)
+<p align="center"><sub><b>Hold Option and every window gets three buttons</b>, for the left, center and right thirds. Right-click any button to make thirds the default.</sub></p>
 
 ![With a second display to the right, a chevron next to the buttons moves the window there, keeping its left half](docs/images/how-two-displays.png)
+<p align="center"><sub><b>Two displays:</b> a › beside the buttons sends the window to the display on the right, still a left half. A ‹ on its left brings it back.</sub></p>
 
 Each button sits directly below one of the traffic lights, centred on it, and is drawn like a
 miniature green traffic light: half green for the part of the screen the window will take, half
@@ -139,7 +142,7 @@ runs the unit tests for the layout and placement logic.
   one panel per button.
 - `GreenTile/Actions/` the tiling action.
 - `docs/images/` the screenshots and illustrations in this README (`illustrations.html` draws the
-  mock displays; open it with `#f1`, `#f2` or `#f3` and take a 1320 × 475 screenshot at 2×).
+  mock displays; open it with `#f1`, `#f2` or `#f3` and take a 1320 × 415 screenshot at 2×).
 - `Config/` build settings, including the signing setup described above.
 - `project.yml` is the source of truth for the Xcode project. Edit it and regenerate with
   [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen generate`).
