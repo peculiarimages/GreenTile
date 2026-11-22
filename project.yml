@@ -42,8 +42,8 @@ targets:
       properties:
         CFBundleName: GreenTile
         CFBundleDisplayName: GreenTile
-        CFBundleShortVersionString: "0.1.5"
-        CFBundleVersion: "6"
+        CFBundleShortVersionString: "0.1.6"
+        CFBundleVersion: "7"
         LSUIElement: true            # menu-bar utility, no Dock icon
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: "Copyright (c) 2026 peculiarimages. MIT License."
