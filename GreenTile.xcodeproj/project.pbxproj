@@ -18,11 +18,11 @@
 		53C2D2AA1CC8AA6DB7976C1B /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */; };
 		53D0DAAF151C30FA4FD955A2 /* AX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15FE672E00E47D62DA9FDAA /* AX.swift */; };
 		54F3B67210CBA9B26D357BB0 /* Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B3668DD48ED9710DF790A7 /* Display.swift */; };
+		5CF94C9BD1390374919A7ABD /* StageSnapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADECDFB0B0D9D9A748C445F /* StageSnapper.swift */; };
 		66C8B09E55DD23DF9A8F9690 /* GreenTileKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797E8238174D8AEA1D339B9C /* GreenTileKit.framework */; };
 		691D972881893DCD8601BF78 /* DebugTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5729CDE331BC603794CA7F /* DebugTools.swift */; };
 		85DAD9A7A78F6E2532368E46 /* TileLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22863209809FDDF12E1679C /* TileLayout.swift */; };
 		8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */; };
-		5A7E2C1B9D3F4E6A8B0C1D2E /* StageSnapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8F3D2CAE4F5F7B9C1D2E3F /* StageSnapper.swift */; };
 		9419B39892C359383809ADF7 /* ButtonColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F3DB80F7D3B873936EE12B /* ButtonColors.swift */; };
 		96B79C951AB3FB50A57348B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */; };
 		A983D6F835AA15C7C512DDDF /* ProjectLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F341AFAF7330C862F45BC976 /* ProjectLinks.swift */; };
@@ -117,10 +117,10 @@
 		C21D5C467E98FF8BA4D02EAE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D3B3668DD48ED9710DF790A7 /* Display.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Display.swift; sourceTree = "<group>"; };
 		D6A6D05DB31C412B44E13419 /* ScreenGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometry.swift; sourceTree = "<group>"; };
-		6B8F3D2CAE4F5F7B9C1D2E3F /* StageSnapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageSnapper.swift; sourceTree = "<group>"; };
 		DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowActions.swift; sourceTree = "<group>"; };
 		F341AFAF7330C862F45BC976 /* ProjectLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectLinks.swift; sourceTree = "<group>"; };
 		FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPlacementTests.swift; sourceTree = "<group>"; };
+		FADECDFB0B0D9D9A748C445F /* StageSnapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageSnapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,7 +185,7 @@
 		51DE43C5C31724EF628D09FB /* Actions */ = {
 			isa = PBXGroup;
 			children = (
-				6B8F3D2CAE4F5F7B9C1D2E3F /* StageSnapper.swift */,
+				FADECDFB0B0D9D9A748C445F /* StageSnapper.swift */,
 				DE1CEE9DF9F701B04C8E9C02 /* WindowActions.swift */,
 			);
 			path = Actions;
@@ -388,8 +388,8 @@
 				D9EC71C47C5ACB19A32D6D71 /* OverlayController.swift in Sources */,
 				53C2D2AA1CC8AA6DB7976C1B /* OverlayPanel.swift in Sources */,
 				AB4DC95A34A5DA391C6CE16B /* PermissionWindow.swift in Sources */,
+				5CF94C9BD1390374919A7ABD /* StageSnapper.swift in Sources */,
 				1B0C8982F1CA95EECEC7309E /* TileButton.swift in Sources */,
-				5A7E2C1B9D3F4E6A8B0C1D2E /* StageSnapper.swift in Sources */,
 				8FD404D2D84FA7A90BDBF3E8 /* WindowActions.swift in Sources */,
 				15366ED4521D719B93666A19 /* WindowCatalog.swift in Sources */,
 				33BADB196BE1890E0DFA5B78 /* main.swift in Sources */,
