@@ -93,4 +93,23 @@ final class OverlayPlacementTests: XCTestCase {
         XCTAssertFalse(OverlayPlacement.isEligible(windowBounds: CGRect(x: 0, y: 0, width: 1, height: 1), displayFrames: displays))
         XCTAssertFalse(OverlayPlacement.isEligible(windowBounds: CGRect(x: 100, y: 100, width: 200, height: 600), displayFrames: displays))
     }
+
+    func testChevronsBelowSitUnderTheOutermostButtons() {
+        let left = OverlayPlacement.chevronBelowFrame(side: .left, trafficLights: lights)
+        let right = OverlayPlacement.chevronBelowFrame(side: .right, trafficLights: lights)
+        let red = OverlayPlacement.frame(column: 0, trafficLights: lights)
+        let green = OverlayPlacement.frame(column: 2, trafficLights: lights)
+        // Same column, one row down, touching but not overlapping the button above.
+        XCTAssertEqual(left, red.offsetBy(dx: 0, dy: OverlayPlacement.hitSize))
+        XCTAssertEqual(right, green.offsetBy(dx: 0, dy: OverlayPlacement.hitSize))
+        XCTAssertEqual(left.minY, red.maxY)
+        XCTAssertFalse(left.intersects(red))
+    }
+
+    func testAppOverlayStylesRoundTripThroughTheirStoredNames() {
+        for style in AppOverlayStyle.allCases {
+            XCTAssertEqual(AppOverlayStyle(rawValue: style.rawValue), style)
+        }
+        XCTAssertEqual(AppOverlayStyle.allCases.first, .standard)
+    }
 }

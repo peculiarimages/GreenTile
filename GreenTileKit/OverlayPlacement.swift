@@ -71,11 +71,37 @@ public enum OverlayPlacement {
         return CGRect(x: x0.rounded(), y: y, width: (x1 - x0).rounded(), height: hitSize)
     }
 
+    /// The panel frame for a chevron moved off the row, for apps whose title bar has no room beside
+    /// the traffic lights: directly below the outermost tiling button on its side (the left one
+    /// under the red column, the right one under the green column).
+    public static func chevronBelowFrame(side: DisplaySide, trafficLights: CGRect) -> CGRect {
+        frame(column: side == .left ? 0 : 2, trafficLights: trafficLights).offsetBy(dx: 0, dy: hitSize)
+    }
+
     /// Whether a window of these bounds should carry the buttons. A window that exactly covers a
     /// display is in native full screen, where the traffic lights are hidden.
     public static func isEligible(windowBounds: CGRect, displayFrames: [CGRect]) -> Bool {
         guard windowBounds.width >= minimumWindowSize.width,
               windowBounds.height >= minimumWindowSize.height else { return false }
         return !displayFrames.contains { ScreenGeometry.framesMatch($0, windowBounds, tolerance: 1) }
+    }
+}
+
+/// How GreenTile shows itself on one app's windows, chosen per app from the menu-bar menu.
+public enum AppOverlayStyle: String, CaseIterable, Sendable {
+    /// Tiling buttons with the chevrons beside them (the default for every app).
+    case standard
+    /// Tiling buttons, with the chevrons below the outermost buttons instead of beside them, for
+    /// apps whose title bar has no room beside the traffic lights.
+    case chevronsBelow
+    /// No buttons or chevrons on this app's windows, and its windows are left alone.
+    case hidden
+
+    public var title: String {
+        switch self {
+        case .standard: return "Buttons and Chevrons"
+        case .chevronsBelow: return "Chevrons Below Buttons"
+        case .hidden: return "Hide GreenTile"
+        }
     }
 }

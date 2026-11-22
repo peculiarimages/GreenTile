@@ -129,3 +129,24 @@ public enum TileMode: CaseIterable, Sendable {
         thirdsByDefault != optionHeld ? .thirds : .halves
     }
 }
+
+extension TileLayout {
+    /// The layout `frame` is tiled to in `area`, if any. Windows do not always land exactly on the
+    /// tile: some apps size in steps (a terminal's character cells) or have a minimum size. So the
+    /// position may be off by `positionTolerance` points and the size by `sizeTolerance`, and of
+    /// several layouts within those limits the closest wins.
+    public static func matching(_ frame: CGRect, in area: CGRect, gap: CGFloat = 0,
+                                positionTolerance: CGFloat = 2, sizeTolerance: CGFloat = 16) -> TileLayout? {
+        var best: (layout: TileLayout, distance: CGFloat)?
+        for layout in allCases {
+            let tile = layout.frame(in: area, gap: gap)
+            let dx = abs(frame.minX - tile.minX), dy = abs(frame.minY - tile.minY)
+            let dw = abs(frame.width - tile.width), dh = abs(frame.height - tile.height)
+            guard dx <= positionTolerance, dy <= positionTolerance,
+                  dw <= sizeTolerance, dh <= sizeTolerance else { continue }
+            let distance = dx + dy + dw + dh
+            if best == nil || distance < best!.distance { best = (layout, distance) }
+        }
+        return best?.layout
+    }
+}
