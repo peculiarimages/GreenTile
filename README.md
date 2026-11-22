@@ -63,6 +63,12 @@ the outline is that green with 33% black added (`#448929`).
   while the pointer is on the button or on the bubble, and goes once the pointer has been away from
   both for 2 seconds (or straight away when you click). Every bubble ends with the project's address
   next to the app icon; click it to open the project page.
+- **Per app:** the menu-bar menu has three choices for the app in front: **Buttons and Chevrons**
+  (the default), **Chevrons Below Buttons** (for apps such as LINE whose title bar has no room
+  beside the traffic lights: the `‹` goes under the left button and the `›` under the right one),
+  and **Hide GreenTile** (no buttons on that app's windows, and GreenTile leaves them alone).
+  Every app with its own setting is listed under "Apps with Their Own Setting", where it can be
+  changed or set back to the default.
 - **Several displays:** when the display a window is on has another display to its left, a chevron
   `‹` appears to the left of the leftmost button, and when there is one to its right, a chevron `›`
   appears to the right of the rightmost button. Clicking one sends the window to that display,
