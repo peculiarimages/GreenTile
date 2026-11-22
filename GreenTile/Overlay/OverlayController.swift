@@ -173,7 +173,7 @@ final class OverlayController {
         let mode = TileMode.effective(thirdsByDefault: thirdsByDefault, optionHeld: modifierFlags().contains(.option))
 
         // The active window: the frontmost ordinary window of the app in front. Every other window's
-        // buttons are drawn muted, as the system dims an inactive window's controls.
+        // buttons are drawn half see-through, as the system dims an inactive window's controls.
         let frontPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
         let activeWindow = windows.first { $0.layer == 0 && $0.pid == frontPID }?.id
 

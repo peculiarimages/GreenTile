@@ -24,13 +24,10 @@ class ButtonPanel: NSPanel {
         contentView = content
     }
 
-    /// Whether the button is drawn muted, for a window that is not the active one.
-    var isMuted: Bool {
-        get { (contentView as? TileButton)?.isMuted ?? (contentView as? ChevronButton)?.isMuted ?? false }
-        set {
-            (contentView as? TileButton)?.isMuted = newValue
-            (contentView as? ChevronButton)?.isMuted = newValue
-        }
+    /// Whether the button belongs to a window in the background: it is then drawn half
+    /// see-through (`ButtonColors.backgroundOpacity`) so the active window's buttons stand out.
+    var isMuted = false {
+        didSet { alphaValue = isMuted ? CGFloat(ButtonColors.backgroundOpacity) : 1 }
     }
 
     override var canBecomeKey: Bool { false }

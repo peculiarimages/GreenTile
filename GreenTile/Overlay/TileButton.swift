@@ -28,10 +28,6 @@ final class TileButton: NSView {
     /// Called when a mouse button goes down on the button (the help bubble gets out of the way).
     var onPress: (() -> Void)?
 
-    /// True while the window this belongs to is not the active one: the colours lose a third of
-    /// their colour so the active window's buttons stand out.
-    var isMuted = false { didSet { if isMuted != oldValue { needsDisplay = true } } }
-
     private(set) var isHovering = false { didSet { needsDisplay = true } }
     private var isPressed = false { didSet { needsDisplay = true } }
 
@@ -109,10 +105,7 @@ final class TileButton: NSView {
     override func draw(_ dirtyRect: NSRect) {
         // Hovering darkens the button a little and pressing a little more, as the system's do.
         let shade: CGFloat = isPressed ? 0.17 : (isHovering ? 0.07 : 0)
-        func tone(_ color: NSColor) -> NSColor {
-            let base = isMuted ? color.mutedForBackground() : color
-            return base.blended(withFraction: shade, of: .black) ?? base
-        }
+        func tone(_ color: NSColor) -> NSColor { color.blended(withFraction: shade, of: .black) ?? color }
 
         // The circle sits in the middle of the (larger) click area, nudged a little (this view is
         // flipped, so a negative offset is up on screen).

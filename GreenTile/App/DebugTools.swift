@@ -783,7 +783,7 @@ enum DebugTools {
                 for (column, layout) in layouts.enumerated() {
                     let button = TileButton(layout: layout)
                     button.setPreviewState(hovering: state.hover, pressed: state.press)
-                    button.isMuted = state.muted
+                    button.alphaValue = state.muted ? CGFloat(ButtonColors.backgroundOpacity) : 1
                     button.frame = CGRect(x: 6 + CGFloat(column) * (side + 6), y: 6 + CGFloat(row) * (side + 6),
                                           width: side, height: side)
                     sheet.addSubview(button)

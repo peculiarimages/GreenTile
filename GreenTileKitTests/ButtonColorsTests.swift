@@ -36,28 +36,8 @@ final class ButtonColorsTests: XCTestCase {
         XCTAssertEqual(c.shifted(by: -1).hexString, "#000000")
     }
 
-    /// Background windows' buttons keep 67% of their colour: a third of the way to grey.
-    func testBackgroundMuteTakesAThirdOfTheColourOut() {
-        XCTAssertEqual(ButtonColors.backgroundMute, 0.33)
-        let fill = ButtonColors.fill
-        let grey = 0.2126 * fill.red + 0.7152 * fill.green + 0.0722 * fill.blue
-        let muted = fill.desaturated(ButtonColors.backgroundMute)
-        XCTAssertEqual(muted.red, fill.red + (grey - fill.red) * 0.33, accuracy: 1e-9)
-        XCTAssertEqual(muted.green, fill.green + (grey - fill.green) * 0.33, accuracy: 1e-9)
-        XCTAssertEqual(muted.blue, fill.blue + (grey - fill.blue) * 0.33, accuracy: 1e-9)
-        // Still green, just less so.
-        XCTAssertGreaterThan(muted.green, muted.red)
-        XCTAssertLessThan(muted.green - muted.blue, fill.green - fill.blue)
-    }
-
-    func testDesaturatingBehavesAtTheEnds() {
-        let c = ButtonColors.fill
-        XCTAssertEqual(c.desaturated(0), c)
-        let grey = c.desaturated(1)
-        XCTAssertEqual(grey.red, grey.green, accuracy: 1e-9)
-        XCTAssertEqual(grey.green, grey.blue, accuracy: 1e-9)
-        XCTAssertEqual(c.desaturated(-1), c)             // clamped
-        let white = SRGBColor(red: 1, green: 1, blue: 1)
-        XCTAssertEqual(white.desaturated(0.33).hexString, "#FFFFFF")
+    /// Background windows' buttons are drawn half see-through.
+    func testBackgroundButtonsAreHalfTransparent() {
+        XCTAssertEqual(ButtonColors.backgroundOpacity, 0.5)
     }
 }
