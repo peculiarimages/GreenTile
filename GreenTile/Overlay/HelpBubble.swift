@@ -47,6 +47,10 @@ final class HelpLinkView: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
+        // An invisible fill, so no pixel of the row is fully transparent to a click. 0.005 is the
+        // smallest round value that survives 8-bit alpha (0.001 would be stored as 0).
+        NSColor.black.withAlphaComponent(0.005).setFill()
+        bounds.fill()
         let iconRect = CGRect(x: 0, y: (bounds.height - Self.iconSide) / 2, width: Self.iconSide, height: Self.iconSide)
         if let icon = NSApp.applicationIconImage {
             // The icon's drawn shape is the middle 824 of its 1024 points; the rest is margin and
@@ -76,6 +80,9 @@ final class HelpLinkPanel: NSPanel {
         backgroundColor = .clear
         hasShadow = false
         level = .popUpMenu
+        // Said explicitly: by default macOS passes clicks through a clear window's transparent
+        // pixels, which here is everything but the icon and the letters of the address.
+        ignoresMouseEvents = false
         hidesOnDeactivate = false
         isReleasedWhenClosed = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle, .transient]

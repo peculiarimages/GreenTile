@@ -63,8 +63,13 @@ enum DebugTools {
         guard let index = list.firstIndex(where: { Int($0.id) == window.windowNumber }) else { return [] }
         var frames: [CGRect] = []
         var i = index - 1
-        while i >= 0, list[i].isOwn {
-            frames.append(list[i].bounds)
+        // Another running copy of GreenTile puts its own buttons on the test window too: step over
+        // them rather than stopping there.
+        let isOtherCopy = { (pid: pid_t) in
+            NSRunningApplication(processIdentifier: pid)?.bundleIdentifier == Bundle.main.bundleIdentifier
+        }
+        while i >= 0, list[i].isOwn || isOtherCopy(list[i].pid) {
+            if list[i].isOwn { frames.append(list[i].bounds) }
             i -= 1
         }
         return frames.sorted { $0.minX < $1.minX }
@@ -153,11 +158,14 @@ enum DebugTools {
         record("no bubble before hovering", !up())
         record("the away delay is 2 s", HelpBubble.awayDelay == 2)
 
+        // Long enough for the bubble's pause to have passed.
+        let pause = HelpBubble.delay + 0.3
+
         // 1. The pause, the text and the placement.
         enter(left)
         pump(0.2)
         record("no bubble before the pause is up", !up())
-        pump(0.6)
+        pump(pause - 0.2)
         record("bubble shows the left-half help after the pause", shows(.leftHalf), text())
         let bubbleAX = WindowCatalog.onScreen().first { Int($0.id) == bubble.windowNumberForTesting }?.bounds
         if let bubbleAX, let buttonFrame = panelFramesAbove(window).first {
@@ -203,7 +211,7 @@ enum DebugTools {
 
         // 5. Coming back restarts the clock.
         enter(left)
-        pump(0.7)
+        pump(pause)
         record("bubble is up again", shows(.leftHalf))
         leave(left)
         pointer = faraway
@@ -218,7 +226,7 @@ enum DebugTools {
 
         // 6. Going off the button and straight back on keeps the same bubble: no hide and re-show.
         enter(left)
-        pump(0.7)
+        pump(pause)
         leave(left)
         pointer = faraway
         pump(0.3)
@@ -231,12 +239,12 @@ enum DebugTools {
         pump(0.15)
         pointer = faraway
         leave(left)
-        pump(0.8)
+        pump(pause)
         record("leaving before the pause is up cancels the bubble", !up())
 
         // 8. Moving to the neighbouring button swaps the bubble quickly.
         enter(left)
-        pump(0.7)
+        pump(pause)
         leave(left)
         if let right = button(2) {
             enter(right)
@@ -255,7 +263,7 @@ enum DebugTools {
         var opened: [URL] = []
         bubble.openURL = { opened.append($0) }
         enter(left)
-        pump(0.8)
+        pump(pause)
         record("bubble is up before clicking its link row", up() && bubble.isLinkRowShowingForTesting)
         func linkEvent(_ type: NSEvent.EventType) -> NSEvent? {
             NSEvent.mouseEvent(with: type, location: NSPoint(x: 10, y: 10), modifierFlags: [],
@@ -280,7 +288,7 @@ enum DebugTools {
 
         // 9. Pressing the button hides it at once.
         enter(left)
-        pump(0.7)
+        pump(pause)
         if let down = NSEvent.mouseEvent(with: .leftMouseDown, location: NSPoint(x: 8, y: 8), modifierFlags: [],
                                          timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: left.panel.windowNumber,
                                          context: nil, eventNumber: 0, clickCount: 1, pressure: 1),
@@ -296,7 +304,7 @@ enum DebugTools {
 
         // 10. A click anywhere hides it at once. (Sent through the application so the click monitor sees it.)
         enter(left)
-        pump(0.7)
+        pump(pause)
         record("bubble is up before the click", up())
         if let down = NSEvent.mouseEvent(with: .leftMouseDown, location: NSPoint(x: 100, y: 100), modifierFlags: [],
                                          timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber,
@@ -316,7 +324,7 @@ enum DebugTools {
         held = [.option]
         pump(0.4)
         enter(left)
-        pump(0.7)
+        pump(pause)
         record("Option held: bubble shows the left-third help", shows(.leftThird), text())
         held = []
         pump(0.5)
@@ -329,7 +337,7 @@ enum DebugTools {
         pump(0.4)
         if let middle = button(1) {
             enter(middle)
-            pump(0.7)
+            pump(pause)
             record("middle button shows the center-third help", shows(.centerThird), text())
             held = []
             pump(0.5)
@@ -344,7 +352,7 @@ enum DebugTools {
         pump(0.4)
         if let thirdsLeft = button(0) {
             enter(thirdsLeft)
-            pump(0.7)
+            pump(pause)
             record("thirds default: bubble says how to get halves", shows(.leftThird, thirdsByDefault: true), text())
             leave(thirdsLeft)
             bubble.hide()
