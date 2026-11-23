@@ -10,25 +10,30 @@ It’s made mostly with Claude. I’m sharing it here so you can just download i
 
 **[Download GreenTile.zip](https://github.com/peculiarimages/GreenTile/releases/latest/download/GreenTile.zip)**
 (see all versions on the [Releases page](https://github.com/peculiarimages/GreenTile/releases)).
-Unzip it, drag **GreenTile.app** to your Applications folder, and open it. It needs macOS 14 or later.
+Unzip it, drag **GreenTile.app** to your Applications folder, and open it from there. Move it first:
+a permission granted while it runs from Downloads doesn't stick. It needs macOS 14 or later.
 
 The download is **not notarized by Apple**, so the first time you open it macOS will say it can't
-check the app for malicious software. To allow it, open **System Settings > Privacy & Security**,
-scroll to the Security section, and click **Open Anyway** next to the GreenTile message (or run
-`xattr -dr com.apple.quarantine /Applications/GreenTile.app` in Terminal). Then switch on
+check the app for malicious software. Right-click > Open no longer gets past this on current macOS.
+After that first blocked attempt, open **System Settings > Privacy & Security**, scroll to the
+Security section, and click **Open Anyway** next to the GreenTile message (it only appears after
+the blocked attempt, and asks for your password or Touch ID). Or run
+`xattr -dr com.apple.quarantine /Applications/GreenTile.app` in Terminal. Then switch on
 **Accessibility** access for it: GreenTile opens a window that explains how, along with System
 Settings at the right page (see [Requirements](#requirements)). A SHA-256 checksum is
 published next to each download (`GreenTile.zip.sha256`), and the full source is in this
 repository if you would rather build it yourself.
 
-**Updating:** choose **Update GreenTile…** in the menu-bar menu. GreenTile checks GitHub for a newer
+**Updating:** from 0.1.8 on, choose **Update GreenTile…** in the menu-bar menu. GreenTile checks GitHub for a newer
 release, downloads it, checks it against its published SHA-256 and its code signature, replaces
 itself in Applications and restarts. Each version is a new app as far as macOS is concerned, so the
 old Accessibility switch no longer applies: the updater clears it, and the new version asks again,
-so you only need to switch GreenTile on once more. No Open Anyway is needed, because a file the app
-downloads itself is not quarantined. (Updating by hand works too: quit GreenTile, replace the app
+so you only need to switch GreenTile on once more. Open Anyway shouldn't be needed, because a file
+the app downloads itself is not quarantined.
+
+**Version 0.1.7 or earlier has no updater, so update by hand once:** quit GreenTile, replace the app
 in Applications with the new download, open it, click Open Anyway if asked, and use **Ask Again** in
-GreenTile's permission window if Accessibility looks on but nothing appears.)
+GreenTile's permission window if Accessibility looks on but no buttons appear.
 
 ## What it does
 
@@ -104,7 +109,7 @@ background get half see-through buttons, so they stand out less.
 ## Requirements
 
 - macOS 14 or later.
-- Xcode 15 or later to build it. There is no prebuilt download yet.
+- Xcode 15 or later, only if you build it yourself.
 - **Accessibility permission.** GreenTile finds each window's traffic lights and moves windows
   through the Accessibility API, so it needs to be switched on in System Settings > Privacy &
   Security > Accessibility. Without it nothing appears. Until it is granted, GreenTile asks in every
