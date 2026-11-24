@@ -46,7 +46,14 @@ final class OverlayController {
         get { snapper.keepsTilesAcrossDisplays }
         set { snapper.keepsTilesAcrossDisplays = newValue }
     }
-    private let snapper = StageSnapper()
+    private let snapper: StageSnapper = {
+        let snapper = StageSnapper()
+        let badge = SnapBadge()
+        snapper.onSnap = { tile in
+            badge.show(centeredIn: ScreenGeometry.flip(tile, primaryHeight: Display.primaryHeight))
+        }
+        return snapper
+    }()
 
     /// Apps with their own setting, by bundle identifier. Apps not listed are `.standard`.
     var appStyles: [String: AppOverlayStyle] = [:] {

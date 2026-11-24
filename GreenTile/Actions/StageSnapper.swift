@@ -24,6 +24,8 @@ final class StageSnapper {
     var isEnabled = true
     /// Off means a tiled window dragged to another display stays where it is dropped.
     var keepsTilesAcrossDisplays = true
+    /// Called with the tile's frame (top-left screen coordinates) when a window is put back on it.
+    var onSnap: ((CGRect) -> Void)?
 
     /// How long a window must keep the same frame before it counts as having landed.
     static let settleTime: CFTimeInterval = 0.3
@@ -104,6 +106,10 @@ final class StageSnapper {
                 }
                 guard let element = element(window.id) else { continue }
                 WindowActions.tile(element, wanted.layout)
+                if wanted.attempts == 0 {
+                    // The tile on the display the window is on now, which is where `tile` puts it.
+                    onSnap?(wanted.layout.frame(in: displays[index].usable, gap: WindowActions.tileGap))
+                }
                 wanted.attempts += 1
                 pending[window.id] = wanted
                 // Judge the result only once it has settled in turn.
@@ -130,5 +136,64 @@ final class StageSnapper {
             stageManagerCached = UserDefaults(suiteName: "com.apple.WindowManager")?.bool(forKey: "GloballyEnabled") ?? false
         }
         return stageManagerCached
+    }
+}
+
+/// GreenTile's icon, shown for a moment in the middle of a window that GreenTile has just put back
+/// on its tile, so it is clear the move was GreenTile's doing and not the app's or macOS's.
+final class SnapBadge {
+    static let size: CGFloat = 96
+
+    private let panel: NSPanel
+    private var generation = 0
+
+    init() {
+        panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: Self.size, height: Self.size),
+                        styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: true)
+        panel.isOpaque = false
+        panel.backgroundColor = .clear
+        panel.hasShadow = false
+        panel.level = .statusBar
+        panel.ignoresMouseEvents = true
+        panel.hidesOnDeactivate = false
+        panel.isReleasedWhenClosed = false
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle, .transient]
+        let image = NSImageView(frame: NSRect(x: 0, y: 0, width: Self.size, height: Self.size))
+        image.image = NSApp.applicationIconImage
+        image.imageScaling = .scaleProportionallyUpOrDown
+        image.wantsLayer = true
+        image.shadow = {
+            let shadow = NSShadow()
+            shadow.shadowColor = NSColor.black.withAlphaComponent(0.35)
+            shadow.shadowBlurRadius = 8
+            shadow.shadowOffset = NSSize(width: 0, height: -2)
+            return shadow
+        }()
+        panel.contentView = image
+    }
+
+    /// Fades the icon in at the centre of `frame` (AppKit screen coordinates), holds it, fades it out.
+    func show(centeredIn frame: CGRect) {
+        generation += 1
+        let mine = generation
+        let side = Self.size
+        panel.setFrame(NSRect(x: frame.midX - side / 2, y: frame.midY - side / 2, width: side, height: side),
+                       display: false)
+        panel.alphaValue = 0
+        panel.orderFrontRegardless()
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.15
+            panel.animator().alphaValue = 1
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) { [weak self] in
+            guard let self, self.generation == mine else { return }
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.4
+                self.panel.animator().alphaValue = 0
+            }, completionHandler: { [weak self] in
+                guard let self, self.generation == mine else { return }
+                self.panel.orderOut(nil)
+            })
+        }
     }
 }
