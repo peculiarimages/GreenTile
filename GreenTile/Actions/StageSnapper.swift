@@ -142,7 +142,7 @@ final class StageSnapper {
 /// GreenTile's icon, shown for a moment in the middle of a window that GreenTile has just put back
 /// on its tile, so it is clear the move was GreenTile's doing and not the app's or macOS's.
 final class SnapBadge {
-    static let size: CGFloat = 96
+    static let size: CGFloat = 192
 
     private let panel: NSPanel
     private var generation = 0
@@ -185,7 +185,7 @@ final class SnapBadge {
             context.duration = 0.15
             panel.animator().alphaValue = 1
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
             guard let self, self.generation == mine else { return }
             NSAnimationContext.runAnimationGroup({ context in
                 context.duration = 0.4
