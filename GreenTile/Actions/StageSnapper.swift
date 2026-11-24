@@ -158,8 +158,12 @@ final class SnapBadge {
         panel.hidesOnDeactivate = false
         panel.isReleasedWhenClosed = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle, .transient]
-        let image = NSImageView(frame: NSRect(x: 0, y: 0, width: Self.size, height: Self.size))
-        image.image = NSApp.applicationIconImage
+        // The artwork at the full size it was made at, so it stays sharp at this size on a Retina
+        // screen. It is the icon's rounded square without the icon's transparent margin, so it is
+        // drawn inset by that margin (100 of 1024) to look the same size as the app icon would.
+        let inset = Self.size * 100 / 1024
+        let image = NSImageView(frame: NSRect(x: 0, y: 0, width: Self.size, height: Self.size).insetBy(dx: inset, dy: inset))
+        image.image = NSImage(named: "SnapBadge") ?? NSApp.applicationIconImage
         image.imageScaling = .scaleProportionallyUpOrDown
         image.wantsLayer = true
         image.shadow = {
@@ -169,7 +173,9 @@ final class SnapBadge {
             shadow.shadowOffset = NSSize(width: 0, height: -2)
             return shadow
         }()
-        panel.contentView = image
+        let content = NSView(frame: NSRect(x: 0, y: 0, width: Self.size, height: Self.size))
+        content.addSubview(image)
+        panel.contentView = content
     }
 
     /// Fades the icon in at the centre of `frame` (AppKit screen coordinates), holds it, fades it out.
