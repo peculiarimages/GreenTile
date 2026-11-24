@@ -89,7 +89,9 @@ final class StageSnapper {
 
             guard mouseUp, now - state.stableSince >= Self.settleTime,
                   let index = ScreenGeometry.areaIndex(for: window.bounds, in: frames) else { continue }
+            // A window pinned to its tile's edge (it would not shrink to fit) counts as tiled too.
             let current = TileLayout.matching(window.bounds, in: displays[index].usable, gap: WindowActions.tileGap)
+                ?? WindowActions.pinnedLayout(of: window.id, at: window.bounds)
             let found = current.map { Remembered(layout: $0, display: index) }
 
             // Dragged onto another display and let go off any tile: take the old tile there.
@@ -105,10 +107,10 @@ final class StageSnapper {
                     continue
                 }
                 guard let element = element(window.id) else { continue }
-                WindowActions.tile(element, wanted.layout)
+                let landed = WindowActions.tile(element, wanted.layout)
                 if wanted.attempts == 0 {
-                    // The tile on the display the window is on now, which is where `tile` puts it.
-                    onSnap?(wanted.layout.frame(in: displays[index].usable, gap: WindowActions.tileGap))
+                    // Where the window ended up: its tile, or pinned to the tile's edge if it is wider.
+                    onSnap?(landed ?? wanted.layout.frame(in: displays[index].usable, gap: WindowActions.tileGap))
                 }
                 wanted.attempts += 1
                 pending[window.id] = wanted

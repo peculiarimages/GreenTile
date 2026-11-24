@@ -100,7 +100,7 @@ enum AX {
         setSize(window, frame.size)
     }
 
-    private static func setPosition(_ window: AXUIElement, _ point: CGPoint) {
+    static func setPosition(_ window: AXUIElement, _ point: CGPoint) {
         var p = point
         guard let value = AXValueCreate(.cgPoint, &p) else { return }
         AXUIElementSetAttributeValue(window, kAXPositionAttribute as CFString, value)

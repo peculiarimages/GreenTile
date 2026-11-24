@@ -98,3 +98,41 @@ extension ScreenGeometry {
         max(0, min(a1, b1) - max(a0, b0))
     }
 }
+
+extension ScreenGeometry {
+    /// Where a window of `size` goes when it was asked to fill `target` inside `area` but came out
+    /// bigger (an app with a minimum width, say). It keeps to the side of `area` that `target` was
+    /// against: a right tile keeps its right edge on the right of the area and the extra width
+    /// spills left, a left tile the mirror of that, and a tile touching neither side stays centred
+    /// on the tile. The top stays on the tile's top. A window that still fits in `area` is kept
+    /// entirely inside it, so nothing ends up hidden off the edge of the display.
+    public static func anchor(_ size: CGSize, to target: CGRect, in area: CGRect,
+                              tolerance: CGFloat = 1) -> CGRect {
+        let touchesLeft = abs(target.minX - area.minX) <= tolerance
+        let touchesRight = abs(target.maxX - area.maxX) <= tolerance
+        var x: CGFloat
+        if touchesLeft && !touchesRight {
+            x = target.minX
+        } else if touchesRight && !touchesLeft {
+            x = target.maxX - size.width
+        } else {
+            x = target.midX - size.width / 2
+        }
+        if size.width <= area.width {
+            x = min(max(x, area.minX), area.maxX - size.width)
+        } else if !(touchesRight && !touchesLeft) && !(touchesLeft && !touchesRight) {
+            x = area.midX - size.width / 2
+        }
+        var y = target.minY
+        if size.height <= area.height {
+            y = min(max(y, area.minY), area.maxY - size.height)
+        }
+        return CGRect(x: x.rounded(), y: y.rounded(), width: size.width, height: size.height)
+    }
+
+    /// Whether a window that was asked for `target` came out bigger than that in either direction,
+    /// by more than `tolerance` points.
+    public static func isOversized(_ actual: CGSize, for target: CGRect, tolerance: CGFloat = 1) -> Bool {
+        actual.width > target.width + tolerance || actual.height > target.height + tolerance
+    }
+}
