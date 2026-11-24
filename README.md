@@ -89,9 +89,11 @@ the outline is that green with 33% black added (`#448929`).
   covering the same share of it (a window tiled to a left half stays a left half). Hovering it names
   the display. With a single display, or on the side of a window that has no neighbour, there is no
   chevron; the tiling buttons are the same either way.
-- **Stage Manager:** drag a tiled window in from the Stage Manager strip and, once you let go, it
-  goes back to the tile it had in its old stage: a window that was a left half becomes the left half
-  of the stage in front. Windows that were not tiled stay where you drop them. The tile is read from
+- **Stage Manager:** bring a tiled window in from the Stage Manager strip and it goes back to a tile
+  of the same size. Click it in the strip and it keeps the tile it had in its old stage: a window
+  that was a left half becomes the left half of the stage in front. Drag it in instead and the place
+  you let go chooses the side: a half takes the half under the pointer, a third the third under it
+  (left, centre or right). Windows that were not tiled stay where you drop them. The tile is read from
   where the window actually is, so a window you put on a half or third yourself counts too, as long
   as it lines up with GreenTile's tile to within a couple of points (macOS's own tiling leaves
   margins unless "Tiled windows have margins" is off in Desktop & Dock settings). Switch it off with
@@ -210,6 +212,9 @@ Accessibility permission:
 - The buttons cover whatever is underneath them: the top-left corner of the window's content (a
   sidebar's first row, for example). They hide while another window covers them, but not on hover.
 - Some apps with a minimum window size cannot be squeezed to exactly half or a third of a display.
+  GreenTile then keeps such a window against the tile's outer display edge (a right tile against
+  the right edge, a left tile against the left edge, a centre third centred), so it overlaps its
+  neighbour instead of hanging off the screen.
 - Windows on other Spaces, or parked in the Stage Manager strip, have no buttons until shown.
 - To tell which Accessibility window is which, GreenTile uses a private Accessibility symbol
   (`_AXUIElementGetWindow`) that most window managers rely on. It is not App Store compatible.

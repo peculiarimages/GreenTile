@@ -16,6 +16,7 @@
 		29D274BF0B097F7D0D6DAF87 /* ButtonColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */; };
 		33BADB196BE1890E0DFA5B78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D5C467E98FF8BA4D02EAE /* main.swift */; };
 		46114E242523AE312AD4200C /* HelpBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559865C9EAFD53E3E93E6D3 /* HelpBubble.swift */; };
+		519BFF8EAE50335DFB1DE995 /* DropSideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1EB5F84A9ED20A3709D9F7 /* DropSideTests.swift */; };
 		53C2D2AA1CC8AA6DB7976C1B /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44C6A4A6F4CC2ECD72EC380 /* OverlayPanel.swift */; };
 		53D0DAAF151C30FA4FD955A2 /* AX.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15FE672E00E47D62DA9FDAA /* AX.swift */; };
 		54F3B67210CBA9B26D357BB0 /* Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B3668DD48ED9710DF790A7 /* Display.swift */; };
@@ -38,6 +39,7 @@
 		D9EC71C47C5ACB19A32D6D71 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2284F49BBE368468499C1080 /* OverlayController.swift */; };
 		DB6F3966FF65A57C02620B65 /* AccessibilityPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3759CDB91E01B4585B247B28 /* AccessibilityPermission.swift */; };
 		E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */; };
+		E68588D3CE6B53AD2A6A2F4F /* AnchorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4118A5ADC01773AAA8D468 /* AnchorTests.swift */; };
 		EC7BC302CEB5A7F51B95D5BC /* DisplayNeighbourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F99538315E410E35006323 /* DisplayNeighbourTests.swift */; };
 		EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */; };
 		F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */; };
@@ -102,10 +104,12 @@
 		64F99538315E410E35006323 /* DisplayNeighbourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayNeighbourTests.swift; sourceTree = "<group>"; };
 		68F3DB80F7D3B873936EE12B /* ButtonColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColors.swift; sourceTree = "<group>"; };
 		69C4CDE0887630B5AE604746 /* TileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileButton.swift; sourceTree = "<group>"; };
+		6C4118A5ADC01773AAA8D468 /* AnchorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnchorTests.swift; sourceTree = "<group>"; };
 		6CAC7CC035B12BE7665989B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		79285BD21FBC477867C54EB4 /* ProjectLinksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectLinksTests.swift; sourceTree = "<group>"; };
 		797E8238174D8AEA1D339B9C /* GreenTileKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GreenTileKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColorsTests.swift; sourceTree = "<group>"; };
+		8B1EB5F84A9ED20A3709D9F7 /* DropSideTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropSideTests.swift; sourceTree = "<group>"; };
 		97735468F68C8B9CFEC662C5 /* TileLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileLayoutTests.swift; sourceTree = "<group>"; };
 		998D46ED752DDE6F65961F2C /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		9D9E34AF5C751616C53DA0BF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -227,9 +231,11 @@
 		B148B4B3382A9E6204697CBC /* GreenTileKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				6C4118A5ADC01773AAA8D468 /* AnchorTests.swift */,
 				809FB92649D688D3390E4A03 /* ButtonColorsTests.swift */,
 				27F271797B4A4D9C24D80D3A /* ButtonHelpTests.swift */,
 				64F99538315E410E35006323 /* DisplayNeighbourTests.swift */,
+				8B1EB5F84A9ED20A3709D9F7 /* DropSideTests.swift */,
 				FA2B1261D009EA21C4CA6C3D /* OverlayPlacementTests.swift */,
 				79285BD21FBC477867C54EB4 /* ProjectLinksTests.swift */,
 				B2DD72BC5B18E83A8C769070 /* ScreenGeometryTests.swift */,
@@ -404,9 +410,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E68588D3CE6B53AD2A6A2F4F /* AnchorTests.swift in Sources */,
 				29D274BF0B097F7D0D6DAF87 /* ButtonColorsTests.swift in Sources */,
 				EE5E1DD328C6F97E8321E61A /* ButtonHelpTests.swift in Sources */,
 				EC7BC302CEB5A7F51B95D5BC /* DisplayNeighbourTests.swift in Sources */,
+				519BFF8EAE50335DFB1DE995 /* DropSideTests.swift in Sources */,
 				E0CA9591855D66C0E3986097 /* OverlayPlacementTests.swift in Sources */,
 				D5C7FD31AB42F394A767DB89 /* ProjectLinksTests.swift in Sources */,
 				F29FBAA028F9D8798F81BE07 /* ScreenGeometryTests.swift in Sources */,
