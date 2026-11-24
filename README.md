@@ -76,7 +76,7 @@ the outline is that green with 33% black added (`#448929`).
 - **Hover** a button for a second and a small bubble says what it does and how to switch. It stays
   while the pointer is on the button or on the bubble, and goes once the pointer has been away from
   both for 2 seconds (or straight away when you click). Every bubble ends with the project's address
-  next to the app icon; click it to open the project page.
+  next to the app icon; click anywhere on that row to open the project page in your default browser.
 - **Per app:** the menu-bar menu has three choices for the app in front: **Buttons and Chevrons**
   (the default), **Chevrons Below Buttons** (for apps such as LINE whose title bar has no room
   beside the traffic lights: the `‹` goes under the left button and the `›` under the right one),
