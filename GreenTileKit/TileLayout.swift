@@ -150,3 +150,16 @@ extension TileLayout {
         return best?.layout
     }
 }
+
+extension TileLayout {
+    /// The tile of the same size whose column holds `x` in `area`: a half dropped over the right
+    /// half of the display becomes the right half, a third dropped over the middle becomes the
+    /// centre third. Used when a window is dragged in from Stage Manager's strip, where the drop
+    /// point says which side the user wants.
+    public func dropped(atX x: CGFloat, in area: CGRect) -> TileLayout {
+        let siblings: [TileLayout] = isThird ? [.leftThird, .centerThird, .rightThird] : [.leftHalf, .rightHalf]
+        guard area.width > 0 else { return self }
+        let column = Int(((x - area.minX) / area.width * CGFloat(siblings.count)).rounded(.down))
+        return siblings[min(max(column, 0), siblings.count - 1)]
+    }
+}

@@ -41,10 +41,24 @@ final class StageSnapper {
     }
 
     private struct Pending {
-        let layout: TileLayout
+        var layout: TileLayout
         let deadline: CFTimeInterval
         var attempts = 0
+        /// When it arrived from Stage Manager's strip, if it did (not for a move between displays).
+        var arrivedAt: CFTimeInterval?
     }
+
+    /// A press-and-drag of the mouse, in top-left screen coordinates.
+    private struct Drag {
+        var start: CGPoint
+        var end: CGPoint
+        var releasedAt: CFTimeInterval?
+    }
+
+    /// The drag in progress, or the last one let go.
+    private var drag: Drag?
+    /// How far the pointer must travel for a press to count as a drag rather than a click.
+    static let dragDistance: CGFloat = 40
 
     private var seen: [CGWindowID: Seen] = [:]
     /// A window's tile and the display (index into `Display.all()`) it was on.
@@ -74,6 +88,7 @@ final class StageSnapper {
         let now = CACurrentMediaTime()
         let frames = displays.map(\.frame)
         let mouseUp = NSEvent.pressedMouseButtons == 0
+        trackDrag(mouseUp: mouseUp, now: now)
         var next: [CGWindowID: Seen] = [:]
         var moved = false
 
@@ -84,7 +99,7 @@ final class StageSnapper {
             defer { next[window.id] = state }
 
             if arrived, isEnabled, let tile = remembered[window.id], isStageManagerOn(now: now) {
-                pending[window.id] = Pending(layout: tile.layout, deadline: now + Self.patience)
+                pending[window.id] = Pending(layout: tile.layout, deadline: now + Self.patience, arrivedAt: now)
             }
 
             guard mouseUp, now - state.stableSince >= Self.settleTime,
@@ -101,6 +116,11 @@ final class StageSnapper {
             }
 
             if var wanted = pending[window.id] {
+                // Dragged in from the strip: the side it was dropped on wins over the saved tile.
+                if wanted.attempts == 0, let arrivedAt = wanted.arrivedAt,
+                   let dropX = dropPoint(since: arrivedAt)?.x {
+                    wanted.layout = wanted.layout.dropped(atX: dropX, in: displays[index].usable)
+                }
                 if current == wanted.layout || now > wanted.deadline || wanted.attempts >= Self.maxAttempts {
                     pending[window.id] = nil
                     remembered[window.id] = found
@@ -128,6 +148,32 @@ final class StageSnapper {
         // An empty first poll would make every later window look new; record it as "seen nothing".
         if seen.isEmpty { seen[kCGNullWindowID] = Seen(bounds: .zero, stableSince: now) }
         return moved
+    }
+
+    /// Follows the mouse button from poll to poll, keeping where a drag started and where it was
+    /// let go.
+    private func trackDrag(mouseUp: Bool, now: CFTimeInterval) {
+        let location = ScreenGeometry.flip(NSEvent.mouseLocation, primaryHeight: Display.primaryHeight)
+        if !mouseUp {
+            if drag == nil || drag?.releasedAt != nil {
+                drag = Drag(start: location, end: location)
+            } else {
+                drag?.end = location
+            }
+        } else if drag != nil, drag?.releasedAt == nil {
+            drag?.end = location
+            drag?.releasedAt = now
+        }
+    }
+
+    /// Where the pointer let go of a drag that ended around or after `arrival` (Stage Manager can
+    /// bring the window on screen just before or just after the drop). A click on the strip, or a
+    /// press that hardly moved, is not a drag.
+    private func dropPoint(since arrival: CFTimeInterval) -> CGPoint? {
+        guard let drag, let released = drag.releasedAt, released >= arrival - 1 else { return nil }
+        let dx = drag.end.x - drag.start.x, dy = drag.end.y - drag.start.y
+        guard (dx * dx + dy * dy).squareRoot() >= Self.dragDistance else { return nil }
+        return drag.end
     }
 
     /// Whether Stage Manager is switched on. Read from its preferences at most every 2 s, and only
