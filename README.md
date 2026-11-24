@@ -95,11 +95,12 @@ the outline is that green with 33% black added (`#448929`).
   where the window actually is, so a window you put on a half or third yourself counts too, as long
   as it lines up with GreenTile's tile to within a couple of points (macOS's own tiling leaves
   margins unless "Tiled windows have margins" is off in Desktop & Dock settings). Switch it off with
-  "Keep Tiles in Stage Manager" in the menu-bar menu.
+  "Keep Tiles in Stage Manager" in the menu-bar menu. When GreenTile puts a window back, its icon
+  shows for a moment in the middle of the window, so you can tell the move was GreenTile's.
 - **Dragging to another display:** drag a tiled window onto another display and, once you let go,
   it takes the same tile there: a left half becomes the left half of the new display. Drag it off its
   tile on the same display and it stays where you put it (and is no longer treated as tiled). Switch
-  it off with "Keep Tiles Across Displays" in the menu-bar menu.
+  it off with "Keep Tiles Across Displays" in the menu-bar menu. The same icon shows when it snaps.
 
 The buttons hide behind any window that covers theirs, never steal focus when clicked, and follow
 their window as it moves. They work on every display, including displays arranged to the left of
