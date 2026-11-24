@@ -89,16 +89,23 @@ the outline is that green with 33% black added (`#448929`).
   covering the same share of it (a window tiled to a left half stays a left half). Hovering it names
   the display. With a single display, or on the side of a window that has no neighbour, there is no
   chevron; the tiling buttons are the same either way.
-- **Stage Manager:** bring a tiled window in from the Stage Manager strip and it goes back to a tile
-  of the same size. Click it in the strip and it keeps the tile it had in its old stage: a window
-  that was a left half becomes the left half of the stage in front. Drag it in instead and the place
-  you let go chooses the side: a half takes the half under the pointer, a third the third under it
-  (left, centre or right). Windows that were not tiled stay where you drop them. The tile is read from
+- **Stage Manager:** drag a tiled window in from the Stage Manager strip and, once you let go, it
+  goes back to the tile it had in its old stage: a window that was a left half becomes the left half
+  of the stage in front. Where you let go picks the side: drop a half over the right half of the
+  display and it becomes the right half; drop a third over the left, middle or right third and it
+  takes that third. Bringing a window in with a click (no drag) puts it back on its saved tile.
+  Windows that were not tiled stay where you drop them. The tile is read from
   where the window actually is, so a window you put on a half or third yourself counts too, as long
   as it lines up with GreenTile's tile to within a couple of points (macOS's own tiling leaves
   margins unless "Tiled windows have margins" is off in Desktop & Dock settings). Switch it off with
   "Keep Tiles in Stage Manager" in the menu-bar menu. When GreenTile puts a window back, its icon
   shows for a moment in the middle of the window, so you can tell the move was GreenTile's.
+- **Windows that won't shrink:** some apps have a minimum width or height. When a window stays
+  bigger than its tile, GreenTile keeps it against the edge you tiled it to instead of letting it
+  hang off the display: a right tile's right edge sits on the display's right edge and the extra
+  width spills left, a left tile the mirror of that, a center third stays centered, and the top
+  stays at the top. Stage Manager and display moves place it the same way, and it still counts as
+  tiled.
 - **Dragging to another display:** drag a tiled window onto another display and, once you let go,
   it takes the same tile there: a left half becomes the left half of the new display. Drag it off its
   tile on the same display and it stays where you put it (and is no longer treated as tiled). Switch
@@ -169,11 +176,14 @@ runs the unit tests for the layout and placement logic.
   between buttons is genuinely empty and clicks there reach the window), ordered directly above its
   window. A window in front of it hides its buttons too, and clicking never steals focus.
 - **Tiling.** Sets the window's size and position through Accessibility. Tile edges are rounded
-  once and shared, so neighbouring tiles always meet exactly.
+  once and shared, so neighbouring tiles always meet exactly. The frame is then read back; a window
+  the app kept bigger than its tile is moved so it sits against the same display edge as the tile.
 - **Stage Manager.** Each poll remembers which tile (if any) every window is on once it has settled
   with no mouse button held. A window that arrives on screen with a remembered tile, such as one
   dragged in from the Stage Manager strip, is tiled again within 4 s, at most twice, and only while
-  Stage Manager is on.
+  Stage Manager is on. If it was dragged in (the pointer moved at least 40 pt and was let go no
+  more than 1 s before the window appeared), the x position where the pointer was let go picks the
+  half or third of the display's usable area instead.
   A tiled window that settles on a different display than the one its tile was remembered on, and
   off any tile, gets the same tile on its new display, with the same limits.
 
@@ -211,10 +221,8 @@ Accessibility permission:
 
 - The buttons cover whatever is underneath them: the top-left corner of the window's content (a
   sidebar's first row, for example). They hide while another window covers them, but not on hover.
-- Some apps with a minimum window size cannot be squeezed to exactly half or a third of a display.
-  GreenTile then keeps such a window against the tile's outer display edge (a right tile against
-  the right edge, a left tile against the left edge, a centre third centred), so it overlaps its
-  neighbour instead of hanging off the screen.
+- Some apps with a minimum window size cannot be squeezed to exactly half or a third of a display;
+  GreenTile pins them to the tile's outer edge, so they overlap the neighbouring tile instead.
 - Windows on other Spaces, or parked in the Stage Manager strip, have no buttons until shown.
 - To tell which Accessibility window is which, GreenTile uses a private Accessibility symbol
   (`_AXUIElementGetWindow`) that most window managers rely on. It is not App Store compatible.
