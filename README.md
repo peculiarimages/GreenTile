@@ -59,6 +59,9 @@ hovering, no menu, no keyboard shortcut to remember.
 ![With a second display to the right, a chevron next to the buttons moves the window there, keeping its left half](docs/images/how-two-displays.png)
 <p align="center"><sub><b>Two displays:</b> a › beside the buttons sends the window to the display on the right, still a left half. A ‹ on its left brings it back.</sub></p>
 
+![Two windows tiled side by side: holding ⌘ and dragging the edge they share makes one wider and the other narrower, with no gap](docs/images/linked-resize.gif)
+<p align="center"><sub><b>Hold ⌘ and drag the edge two side-by-side windows share</b>, and both resize together: one gets wider, the other narrower, with no gap.</sub></p>
+
 Each button sits directly below one of the traffic lights, centred on it, and is drawn like a
 miniature green traffic light: half green for the part of the screen the window will take, half
 white for the rest. The green is `#66CC3D`, the average of the system's green traffic light, and
@@ -213,6 +216,8 @@ runs the unit tests for the layout and placement logic.
   mock displays; open it with `#f1`, `#f2` or `#f3` and take a 1320 × 415 screenshot at 2×).
 - `docs/images/demo.gif` comes from `animation.html` (one 1320 × 445 screenshot per frame at
   `#t=<seconds>`, 12 per second) put together with `swift Scripts/make-gif.swift <frames dir> demo.gif 0.75 0.0833`.
+- `docs/images/linked-resize.gif` is made the same way from `linked-resize.html` (1320 × 524 per
+  frame, `#t=` from 0 to 10.5 seconds).
 - `Config/` build settings, including the signing setup described above.
 - `project.yml` is the source of truth for the Xcode project. Edit it and regenerate with
   [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen generate`).

@@ -1,0 +1,118 @@
+<!doctype html><html><head><meta charset="utf-8">
+<!-- Linked resize demo: same look as animation.html, one display. Open with #t=<seconds>. -->
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; background:#ffffff; font:15px -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; color:#1d1d1f; }
+  .bezel { background:#1c1c1e; border-radius:14px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,.18); }
+  .screen { position:relative; width:760px; height:420px; border-radius:4px; overflow:hidden;
+            background:linear-gradient(160deg,#8ec5e8 0%,#b9d9c3 45%,#e8d9b5 100%); }
+  .menubar { position:absolute; left:0; right:0; top:0; height:16px; background:rgba(255,255,255,.72);
+             font-size:10px; line-height:16px; padding-left:10px; color:#222; }
+  .menubar span { margin-right:12px; }
+  .menubar .tile { position:absolute; right:10px; top:3px; width:14px; height:10px; border:1.5px solid #333; border-radius:2px; }
+  .menubar .tile:after { content:""; position:absolute; left:5px; top:0; bottom:0; border-left:1.5px solid #333; }
+  .dock { position:absolute; bottom:4px; left:50%; transform:translateX(-50%); height:26px; width:210px;
+          background:rgba(255,255,255,.45); border-radius:8px; }
+  .win { position:absolute; background:#fff; border-radius:9px; box-shadow:0 4px 14px rgba(0,0,0,.25);
+         overflow:hidden; border:1px solid rgba(0,0,0,.12); }
+  .win .bar { height:24px; background:#f2f2f4; border-bottom:1px solid #e1e1e4; }
+  .win .side { position:absolute; left:0; top:24px; bottom:0; width:30%; background:#ededf0; }
+  .win .line { position:absolute; height:6px; border-radius:3px; background:#d9d9de; }
+  .win .name { position:absolute; top:5px; left:0; right:0; text-align:center; font-size:10.5px; font-weight:600; color:#555; }
+  .zoom { position:absolute; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,.3); overflow:hidden; background:#f2f2f4; }
+  .key { display:inline-block; border:1.5px solid #8e8e93; border-bottom-width:3px; border-radius:6px; padding:2px 9px; font-size:14px; background:#fafafa; }
+  .key.down { border-color:#448929; border-bottom-width:1.5px; margin-top:1.5px; background:#eef8e9; }
+  svg { position:absolute; overflow:visible; }
+  .stage{position:relative;width:1240px;height:460px;margin:0 auto}
+  .stage .bezel{position:absolute;top:0}
+  .capt{height:58px;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:600;gap:12px;padding-top:6px}
+  .capt .key{font-size:20px}
+  .held{position:absolute;font-size:13px;padding:1px 7px}
+  body{width:1320px;padding:0 40px}
+</style></head>
+<body>
+<div class="capt" id="capt"></div>
+<div class="stage" id="stage">
+  <div class="bezel" style="left:230px"><div class="screen" id="sa"></div></div>
+</div>
+<script>
+const NS="http://www.w3.org/2000/svg";
+const G="#66CC3D", GD="#448929";
+// Traffic lights + GreenTile half buttons (same drawing as animation.html).
+function lights(win){
+  const s=document.createElementNS(NS,"svg"); s.setAttribute("width",200); s.setAttribute("height",60);
+  s.style.left="0px"; s.style.top="0px";
+  const cx=[17,34,51], cy=12, r=5.6, br=4.3, by=cy+13;
+  let h="";
+  ["#FF5F57","#FEBC2E","#28C840"].forEach((c,i)=>{ h+=`<circle cx="${cx[i]}" cy="${cy}" r="${r}" fill="${c}" stroke="rgba(0,0,0,.12)" stroke-width=".5"/>`; });
+  [[0,0,.5],[2,.5,1]].forEach(([i,a,b])=>{
+    const id="c"+Math.random().toString(36).slice(2);
+    h+=`<clipPath id="${id}"><circle cx="${cx[i]}" cy="${by}" r="${br}"/></clipPath>`+
+       `<circle cx="${cx[i]}" cy="${by}" r="${br}" fill="#fafafa"/>`+
+       `<rect x="${cx[i]-br+a*2*br}" y="${by-br}" width="${(b-a)*2*br}" height="${2*br}" fill="${G}" clip-path="url(#${id})"/>`+
+       `<circle cx="${cx[i]}" cy="${by}" r="${br}" fill="none" stroke="${GD}" stroke-width="1.2"/>`;
+  });
+  s.innerHTML=h; win.appendChild(s);
+}
+const ARROW='<path d="M1,1 L1,17 L5,13 L8,20 L11,19 L8,12 L14,12 Z" fill="#000" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>';
+// macOS left-right resize cursor, centred on (0,0) in a 24x20 box.
+const RESIZE='<g transform="translate(12,10)"><path d="M-10,0 L-5,-5 L-5,-1.6 L-1.2,-1.6 L-1.2,-8 L1.2,-8 L1.2,-1.6 L5,-1.6 L5,-5 L10,0 L5,5 L5,1.6 L1.2,1.6 L1.2,8 L-1.2,8 L-1.2,1.6 L-5,1.6 L-5,5 Z" fill="#000" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></g>';
+function cursor(parent,x,y,kind,k=1){ const s=document.createElementNS(NS,"svg");
+  if(kind==="resize"){ s.setAttribute("width",24*k); s.setAttribute("height",20*k); s.style.left=(x-12*k)+"px"; s.style.top=(y-10*k)+"px";
+    s.innerHTML=`<g transform="scale(${k})">${RESIZE}</g>`; }
+  else { s.setAttribute("width",16); s.setAttribute("height",22); s.style.left=(x-2)+"px"; s.style.top=(y+1)+"px"; s.innerHTML=ARROW; }
+  parent.appendChild(s); }
+const W=760, SH=420, TOP=16, BOT=SH-34, H=BOT-TOP;
+function win(scr,x,w,name,side){ const d=document.createElement("div"); d.className="win";
+  Object.assign(d.style,{left:x+"px",top:TOP+"px",width:w+"px",height:H+"px"});
+  d.innerHTML=`<div class="bar"><div class="name">${name}</div></div>`+(side?'<div class="side"></div>':'');
+  const lx=side?w*0.36:24;
+  for(let i=0;i<7;i++){ const l=document.createElement("div"); l.className="line";
+    Object.assign(l.style,{left:lx+"px",top:(44+i*18)+"px",width:((w-lx-20)*(0.86-0.12*(i%3)))+"px"}); d.appendChild(l); }
+  lights(d); scr.appendChild(d); }
+
+// Timeline (seconds). split = left window's share of the display width.
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, lerp=(a,b,u)=>a+(b-a)*u;
+const t=parseFloat(new URLSearchParams(location.hash.slice(1)).get("t")||"0");
+const CAP=[
+  'Two windows tiled <b>side by side</b>',
+  'Hold <span class="key">⌘ command</span> and drag the <b>shared edge</b>',
+  'Both windows resize <b>together</b>',
+  '<span><b>No gap</b>, no overlap</span>',
+];
+// [time, split] keyframes for the drag
+const DRAG=[[2.6,.5],[3.8,.66],[4.4,.66],[5.9,.36],[6.4,.36],[7.4,.5]];
+let split=.5;
+for(let i=1;i<DRAG.length;i++){ const [t0,a]=DRAG[i-1],[t1,b]=DRAG[i];
+  if(t>=t0&&t<t1){ split=lerp(a,b,ease((t-t0)/(t1-t0))); break; } if(t>=t1) split=b; }
+const seamY=TOP+H*0.62;
+const rest={x:W*0.8, y:80}, away={x:W*0.62, y:150};
+let cur, kind="arrow", cmd=false;
+if(t<1.2) cur=rest;
+else if(t<2.2){ const u=ease((t-1.2)/1.0); cur={x:lerp(rest.x,W*.5,u), y:lerp(rest.y,seamY,u)}; }
+else if(t<7.7){ cur={x:W*split,y:seamY}; kind="resize"; cmd=t>=2.35; }
+else if(t<8.4){ const u=ease((t-7.7)/0.7); cur={x:lerp(W*.5,away.x,u), y:lerp(seamY,away.y,u)}; }
+else cur=away;
+const cap = t<1.2?CAP[0] : t<4.4?CAP[1] : t<6.4?CAP[2] : CAP[3];
+document.getElementById("capt").innerHTML=cap;
+
+const sa=document.getElementById("sa");
+sa.innerHTML='<div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Window</span><div class="tile"></div></div><div class="dock"></div>';
+const seam=Math.round(W*split);
+win(sa,0,seam,"Notes",true);
+win(sa,seam,W-seam,"Editor",false);
+// Magnifier on the seam, on whichever side has more room.
+if(kind==="resize"){
+  const size=170, k=2.6, zx= seam<W/2 ? W-size-18 : 18, zy=SH-size-44;
+  const z=document.createElement("div"); z.className="zoom";
+  Object.assign(z.style,{left:zx+"px",top:zy+"px",width:size+"px",height:size+"px",background:"#fff"});
+  z.innerHTML=`<div style="position:absolute;left:${size/2-1}px;top:0;bottom:0;border-left:${k*0.9}px solid rgba(0,0,0,.14)"></div>`;
+  cursor(z,size/2,size/2,"resize",k);
+  if(cmd){ const kk=document.createElement("span"); kk.className="key down held"; kk.textContent="⌘";
+    Object.assign(kk.style,{left:(size/2-19)+"px",top:(size/2+20)+"px",fontSize:"20px",padding:"2px 10px"}); z.appendChild(kk); }
+  sa.appendChild(z);
+}
+if(cmd){ const kk=document.createElement("span"); kk.className="key down held"; kk.textContent="⌘";
+  Object.assign(kk.style,{left:(cur.x+14)+"px",top:(cur.y+12)+"px"}); sa.appendChild(kk); }
+cursor(sa,cur.x,cur.y,kind);
+</script></body></html>
