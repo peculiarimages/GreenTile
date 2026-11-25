@@ -106,6 +106,13 @@ the outline is that green with 33% black added (`#448929`).
   width spills left, a left tile the mirror of that, a center third stays centered, and the top
   stays at the top. Stage Manager and display moves place it the same way, and it still counts as
   tiled.
+- **Resize two windows together:** hold ⌘ while dragging the edge two side-by-side windows share
+  and the other window follows, so the border between them moves as one: one window gets wider,
+  the other narrower, with no gap and no overlap. If the other window is hidden behind another
+  window (a second left half, say), it is raised to just below the one you are dragging, so you can
+  see it change. Neither window is squeezed below its app's minimum width; when you let go, the dragged window is trimmed to meet its
+  neighbour. Both keep the new split as their tile, so Stage Manager snap-back keeps it too.
+  Without ⌘, resizing works as usual.
 - **Dragging to another display:** drag a tiled window onto another display and, once you let go,
   it takes the same tile there: a left half becomes the left half of the new display. Drag it off its
   tile on the same display and it stays where you put it (and is no longer treated as tiled). Switch
@@ -178,6 +185,13 @@ runs the unit tests for the layout and placement logic.
 - **Tiling.** Sets the window's size and position through Accessibility. Tile edges are rounded
   once and shared, so neighbouring tiles always meet exactly. The frame is then read back; a window
   the app kept bigger than its tile is moved so it sits against the same display edge as the tile.
+- **Linked resize.** While the left button and ⌘ are held, a window whose frame changes by one
+  vertical edge only is being resized; the window whose edge touched that edge before the drag (on
+  the same display, beside it for at least half the height) is resized to meet it on every poll,
+  keeping its far edge. If another window sits in front of the neighbour over the space the two
+  share, the neighbour is raised (without activating either app) to just below the dragged window
+  when the drag starts. On release both frames are read back, lined up, and remembered as a custom
+  share of the display's usable area.
 - **Stage Manager.** Each poll remembers which tile (if any) every window is on once it has settled
   with no mouse button held. A window that arrives on screen with a remembered tile, such as one
   dragged in from the Stage Manager strip, is tiled again within 4 s, at most twice, and only while
