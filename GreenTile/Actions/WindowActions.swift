@@ -5,10 +5,16 @@ enum WindowActions {
     /// Space between the tile and the screen edge, in points.
     static let tileGap: CGFloat = 0
 
-    /// Windows that would not shrink to their tile and were pinned to its outer edge instead: the
-    /// layout they were tiled to and the frame they ended up with. A pinned window does not match
-    /// its tile exactly, so this is how Stage Manager snap-back still knows it is tiled.
-    private(set) static var pinned: [CGWindowID: (layout: TileLayout, frame: CGRect)] = [:]
+    /// Windows whose frame is a tile that `TileLayout.matching` cannot see: ones that would not
+    /// shrink to their tile and were pinned to its outer edge, and ones resized together with a
+    /// neighbour into a custom split. Each has the tile and the frame it ended up with, so Stage
+    /// Manager snap-back still knows it is tiled.
+    private(set) static var placed: [CGWindowID: (tile: Tile, frame: CGRect)] = [:]
+
+    /// Records that window `id` now sits at `frame` as `tile`.
+    static func remember(_ id: CGWindowID, as tile: Tile, at frame: CGRect) {
+        placed[id] = (tile, frame)
+    }
 
     /// Sends `window` to the display on `side` of the one it is on. It keeps the same share of the
     /// new display's usable area, so a window tiled to a left half stays a left half there. Does
@@ -29,27 +35,40 @@ enum WindowActions {
     /// - Returns: the frame the window ended up with.
     @discardableResult
     static func tile(_ window: AXUIElement, _ layout: TileLayout) -> CGRect? {
+        tile(window, .layout(layout))
+    }
+
+    /// Puts `window` on `tile` on the display it is on.
+    /// - Returns: the frame the window ended up with.
+    @discardableResult
+    static func tile(_ window: AXUIElement, _ tile: Tile) -> CGRect? {
         let displays = Display.all()
         guard let current = AX.frame(of: window),
               let index = ScreenGeometry.areaIndex(for: current, in: displays.map(\.frame)) else { return nil }
         let area = displays[index].usable
-        let target = layout.frame(in: area, gap: tileGap)
+        let target = tile.frame(in: area, gap: tileGap)
         let result = place(window, at: target, in: area)
         if let id = AX.windowID(of: window) {
-            if let result, ScreenGeometry.isOversized(result.size, for: target) {
-                pinned[id] = (layout, result)
+            var isCustom = false
+            if case .custom = tile { isCustom = true }
+            if let result, isCustom || ScreenGeometry.isOversized(result.size, for: target) {
+                placed[id] = (tile, result)
             } else {
-                pinned[id] = nil
+                placed[id] = nil
             }
         }
         AX.raise(window)
         return result
     }
 
-    /// The tile a window was pinned to, if it is still exactly where it was pinned.
-    static func pinnedLayout(of id: CGWindowID, at frame: CGRect) -> TileLayout? {
-        guard let entry = pinned[id], ScreenGeometry.framesMatch(entry.frame, frame, tolerance: 2) else { return nil }
-        return entry.layout
+    /// The tile a window was pinned or resized to, if it is still where it was put, or (for a
+    /// custom split) on that same share of the display it is on now.
+    static func placedTile(of id: CGWindowID, at frame: CGRect, in area: CGRect) -> Tile? {
+        guard let entry = placed[id] else { return nil }
+        if ScreenGeometry.framesMatch(entry.frame, frame, tolerance: 2) { return entry.tile }
+        if case .custom = entry.tile,
+           ScreenGeometry.framesMatch(entry.tile.frame(in: area, gap: tileGap), frame, tolerance: 2) { return entry.tile }
+        return nil
     }
 
     /// Sets `window` to `target`, then reads back what the app actually allowed. A window that

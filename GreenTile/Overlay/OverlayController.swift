@@ -46,6 +46,9 @@ final class OverlayController {
         get { snapper.keepsTilesAcrossDisplays }
         set { snapper.keepsTilesAcrossDisplays = newValue }
     }
+    /// Resizes two side-by-side windows together while ⌘ is held.
+    private let edgeLinker = EdgeLinker()
+
     private let snapper: StageSnapper = {
         let snapper = StageSnapper()
         let badge = SnapBadge()
@@ -297,6 +300,12 @@ final class OverlayController {
             if let panel = panels[key] { help.hide(ifOwnedBy: panel) }
             panels[key]?.orderOut(nil)
             panels[key] = nil
+        }
+
+        // ⌘-drag of the edge two windows share: move the neighbour's edge with it.
+        if edgeLinker.update(windows: candidates, element: { self.tracked[$0]?.element }, displays: displays,
+                             linkHeld: CGEventSource.flagsState(.combinedSessionState).contains(.maskCommand)) {
+            boost()
         }
 
         // Put windows Stage Manager has just brought in back on their tiles.

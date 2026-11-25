@@ -41,7 +41,7 @@ final class StageSnapper {
     }
 
     private struct Pending {
-        var layout: TileLayout
+        var layout: Tile
         let deadline: CFTimeInterval
         var attempts = 0
         /// When it arrived from Stage Manager's strip, if it did (not for a move between displays).
@@ -63,7 +63,7 @@ final class StageSnapper {
     private var seen: [CGWindowID: Seen] = [:]
     /// A window's tile and the display (index into `Display.all()`) it was on.
     private struct Remembered {
-        let layout: TileLayout
+        let layout: Tile
         let display: Int
     }
 
@@ -105,8 +105,10 @@ final class StageSnapper {
             guard mouseUp, now - state.stableSince >= Self.settleTime,
                   let index = ScreenGeometry.areaIndex(for: window.bounds, in: frames) else { continue }
             // A window pinned to its tile's edge (it would not shrink to fit) counts as tiled too.
+            // So does one resized together with its neighbour into a custom split.
             let current = TileLayout.matching(window.bounds, in: displays[index].usable, gap: WindowActions.tileGap)
-                ?? WindowActions.pinnedLayout(of: window.id, at: window.bounds)
+                .map(Tile.layout)
+                ?? WindowActions.placedTile(of: window.id, at: window.bounds, in: displays[index].usable)
             let found = current.map { Remembered(layout: $0, display: index) }
 
             // Dragged onto another display and let go off any tile: take the old tile there.
