@@ -11,7 +11,8 @@ import GreenTileKit
 /// that edge before the drag is its neighbour, and is resized to meet it on every poll until the
 /// button is let go. An app's minimum width is respected: the neighbour is never pushed narrower
 /// than its app allows, and on release the dragged window is trimmed back to meet it. Both windows
-/// then keep the new split as their tile, so Stage Manager snap-back keeps it too.
+/// then keep the new split as their tile, so Stage Manager snap-back keeps it too. A neighbour
+/// hidden behind another window is brought up to just below the dragged one when the drag starts.
 final class EdgeLinker {
     private struct Link {
         let dragged: CGWindowID
@@ -74,10 +75,24 @@ final class EdgeLinker {
                               outer: edge == .right ? neighbourFrame.maxX : neighbourFrame.minX,
                               border: edge == .right ? window.bounds.maxX : window.bounds.minX)
             link = active
+            reveal(active, in: windows)
             follow(active, draggedFrame: window.bounds)
             return true
         }
         return false
+    }
+
+    /// When a window other than the one being dragged sits in front of the neighbour over the space
+    /// the two share (a second window on the dragged window's side, say, which would hide the
+    /// neighbour as it grows), brings the neighbour up to just below the dragged window, so its edge
+    /// can be seen following. Neither app is activated.
+    private func reveal(_ link: Link, in windows: [WindowCatalog.Info]) {
+        let frames = windows.map(\.bounds)
+        guard let neighbour = windows.firstIndex(where: { $0.id == link.neighbour }),
+              let dragged = windows.firstIndex(where: { $0.id == link.dragged }),
+              LinkedEdge.neighbourIsHidden(neighbour, dragged: dragged, in: frames) else { return }
+        AX.raiseWithoutActivating(link.neighbourElement)
+        AX.raiseWithoutActivating(link.draggedElement)
     }
 
     /// Moves the neighbour's near edge to the border. If its app will not let it get that narrow,

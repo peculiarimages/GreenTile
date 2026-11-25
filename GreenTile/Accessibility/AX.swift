@@ -118,4 +118,9 @@ enum AX {
         AXUIElementSetAttributeValue(app, kAXFrontmostAttribute as CFString, true as CFBoolean)
         AXUIElementPerformAction(window, kAXRaiseAction as CFString)
     }
+
+    /// Brings `window` in front of other windows without making its app the active one.
+    static func raiseWithoutActivating(_ window: AXUIElement) {
+        AXUIElementPerformAction(window, kAXRaiseAction as CFString)
+    }
 }

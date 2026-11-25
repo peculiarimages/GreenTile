@@ -47,4 +47,29 @@ final class LinkedEdgeTests: XCTestCase {
         XCTAssertEqual(tile.dropped(atX: 10, in: area), tile)
         XCTAssertEqual(Tile.layout(.leftHalf).dropped(atX: 2000, in: area), .layout(.rightHalf))
     }
+
+    func testNeighbourBehindAnotherWindowOnTheDraggedSideIsRaised() {
+        let left = TileLayout.leftHalf.frame(in: area)
+        let right = TileLayout.rightHalf.frame(in: area)
+        // Front to back: the dragged left half, a second left half, the right half at the bottom.
+        // The second left half only touches the right one, but would hide it as it grows left.
+        XCTAssertTrue(LinkedEdge.neighbourIsHidden(2, dragged: 0, in: [left, left, right]))
+        // A window over part of the right half hides it too.
+        let small = CGRect(x: 1500, y: 200, width: 400, height: 300)
+        XCTAssertTrue(LinkedEdge.neighbourIsHidden(2, dragged: 0, in: [left, small, right]))
+    }
+
+    func testNeighbourAlreadyVisibleIsLeftAlone() {
+        let left = TileLayout.leftHalf.frame(in: area)
+        let right = TileLayout.rightHalf.frame(in: area)
+        // Already just below the dragged window.
+        XCTAssertFalse(LinkedEdge.neighbourIsHidden(1, dragged: 0, in: [left, right, left]))
+        // Only the dragged window is in front of it.
+        XCTAssertFalse(LinkedEdge.neighbourIsHidden(1, dragged: 0, in: [left, right]))
+        // A window in front that is nowhere near the two.
+        let elsewhere = CGRect(x: 3000, y: 31, width: 500, height: 500)
+        XCTAssertFalse(LinkedEdge.neighbourIsHidden(2, dragged: 0, in: [left, elsewhere, right]))
+        // The neighbour is in front of the dragged window (dragged from behind it).
+        XCTAssertFalse(LinkedEdge.neighbourIsHidden(0, dragged: 1, in: [right, left]))
+    }
 }

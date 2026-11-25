@@ -80,4 +80,18 @@ public enum LinkedEdge {
         let x1 = side == .right ? outer : border
         return CGRect(x: x0.rounded(), y: frame.minY, width: max(1, (x1 - x0).rounded()), height: frame.height)
     }
+
+    /// Whether the neighbour (at `neighbour` in a front-to-back list of frames) should be raised to
+    /// just below the dragged window (at `dragged`): true when some other window in front of the
+    /// neighbour overlaps the space the two share, so part of the neighbour, or the space it grows
+    /// into as the border moves, is hidden. Windows that only touch along an edge do not count.
+    public static func neighbourIsHidden(_ neighbour: Int, dragged: Int, in frontToBack: [CGRect]) -> Bool {
+        guard frontToBack.indices.contains(neighbour), frontToBack.indices.contains(dragged) else { return false }
+        let space = frontToBack[neighbour].union(frontToBack[dragged])
+        return frontToBack[..<neighbour].indices.contains { other in
+            guard other != dragged else { return false }
+            let overlap = frontToBack[other].intersection(space)
+            return !overlap.isNull && overlap.width > 1 && overlap.height > 1
+        }
+    }
 }
